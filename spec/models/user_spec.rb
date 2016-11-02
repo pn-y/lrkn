@@ -10,4 +10,8 @@ RSpec.describe User, type: :model do
       it { should validate_uniqueness_of(:login).case_insensitive }
     end
   end
+
+  describe 'associations' do
+    it { should have_one(:truck ) }
+  end
 end

@@ -11,10 +11,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161102082753) do
+ActiveRecord::Schema.define(version: 20161102160357) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "trucks", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "max_weight"
+    t.integer "max_volume"
+  end
+
+  add_index "trucks", ["user_id"], name: "index_trucks_on_user_id", using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string   "login",               default: "", null: false
@@ -27,4 +35,5 @@ ActiveRecord::Schema.define(version: 20161102082753) do
 
   add_index "users", ["login"], name: "index_users_on_login", unique: true, using: :btree
 
+  add_foreign_key "trucks", "users"
 end

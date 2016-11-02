@@ -5,6 +5,8 @@ class User < ActiveRecord::Base
 
   USER_ROLES = %w(driver dispatcher).freeze
 
+  has_one :truck
+
   validates :login, presence: true, uniqueness: true
   validates :role, inclusion: { in: USER_ROLES }
 
