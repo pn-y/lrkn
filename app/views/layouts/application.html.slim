@@ -1,0 +1,32 @@
+doctype html
+html
+  head
+    title = Lrkn
+    = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true
+    = javascript_include_tag 'application', 'data-turbolinks-track' => true
+    = csrf_meta_tags
+  body
+    header.navbar.navbar-fixed-top.navbar-inverse
+      .container
+        = link_to "Larkin LLC", root_path
+        nav
+          ul.nav.navbar-nav.navbar-right
+            - if user_signed_in?
+              li = link_to 'Sign out', destroy_user_session_path, method: :delete
+            - else
+              li = link_to 'Sign in', new_user_session_path
+            /li = link_to 'Register', new_user_company_path
+    .container
+      div
+        - flash.each do |name, msg|
+          - errors_keys = ['error', 'alert']
+          = content_tag :div,
+                        class: "alert alert-#{ errors_keys.include?(name) ? "danger" : "success" } alert-dismissable alert-flash",
+                        role: "alert"  do
+            button.close type="button" data-dismiss="alert"
+              span
+                | &times;
+              span
+                | Close
+            == msg
+      = yield
