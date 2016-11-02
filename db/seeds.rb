@@ -5,3 +5,17 @@
 #
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
+
+users = User.where(login: %w(first_driver second_driver))
+users.each { |u| u.truck&.destroy }
+users.destroy_all
+
+first_driver = User.create!(login: 'first_driver', password: '111111', role: 'driver')
+second_driver = User.create!(login: 'second_driver', password: '111111', role: 'driver')
+
+Truck.create!(max_weight: 10_000, max_volume: 1400, user_id: first_driver.id)
+Truck.create!(max_weight: 10_000, max_volume: 1400, user_id: second_driver.id)
+
+
+User.where(login: 'dispatcher').destroy_all
+User.create!(login: 'dispatcher', password: '111111', role: 'dispatcher')
