@@ -6,16 +6,23 @@ html
     = javascript_include_tag 'application', 'data-turbolinks-track' => true
     = csrf_meta_tags
   body
-    header.navbar.navbar-fixed-top.navbar-inverse
+    header.navbar.navbar-inverse
       .container
-        = link_to "Larkin LLC", root_path
-        nav
-          ul.nav.navbar-nav.navbar-right
+        .navbar-header
+          = link_to "Larkin LLC", root_path, class: 'navbar-brand'
+        .navbar-collapse.collapse
+          .nav.navbar-nav
+            - if current_user_dispatcher?
+              li = link_to 'Upload orders', new_order_csv_uploader_path
+              li = link_to 'Orders', orders_path
+              li = link_to 'Loads', '#'
+            - if user_signed_in?
+              li = link_to 'Routing list', '#'
+          .nav.navbar-nav.navbar-right
             - if user_signed_in?
               li = link_to 'Sign out', destroy_user_session_path, method: :delete
             - else
               li = link_to 'Sign in', new_user_session_path
-            /li = link_to 'Register', new_user_company_path
     .container
       div
         - flash.each do |name, msg|
@@ -29,4 +36,6 @@ html
               span
                 | Close
             == msg
-      = yield
+      .row
+        .col-md-12
+          = yield
