@@ -10,6 +10,14 @@ class User < ActiveRecord::Base
   validates :login, presence: true, uniqueness: true
   validates :role, inclusion: { in: USER_ROLES }
 
+  def driver?
+    role == 'driver'
+  end
+
+  def dispatcher?
+    role == 'dispatcher'
+  end
+
   # Hacking devise to use login instead of email
   def email_required?
     false
