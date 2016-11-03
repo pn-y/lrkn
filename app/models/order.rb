@@ -1,4 +1,5 @@
 class Order < ActiveRecord::Base
+  attr_accessor :row_number
 
   DELIVERY_SHIFTS = %w(M N E).freeze
 

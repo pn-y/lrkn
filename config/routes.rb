@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   root 'pages#dashboard'
   resources :pages, only: :dashboard
   resources :orders, only: [:index, :show, :edit, :update]
+  resource :order_csv_uploader, only: [:new, :create]
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
