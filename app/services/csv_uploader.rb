@@ -11,6 +11,8 @@ class CsvUploader
         end
       end
       [true, 'You successfully uploaded orders.']
+    rescue CSV::MalformedCSVError
+      [false, 'Error. Malformed CSV.']
     rescue CsvUploaderWrongContentType
       [false, 'Error. CSV file expected.']
     rescue ActiveRecord::RecordInvalid => e

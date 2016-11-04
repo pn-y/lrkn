@@ -26,6 +26,13 @@ RSpec.describe CsvUploader do
       it { expect { subject }.not_to change(Order, :count) }
     end
 
+    context 'when malformed CSV file' do
+      let(:file) { fixture_file_upload('malformed_file.csv', 'text/csv') }
+
+      it { is_expected.to eq([false, 'Error. Malformed CSV.']) }
+      it { expect { subject }.not_to change(Order, :count) }
+    end
+
     context 'when success' do
       let(:file) { fixture_file_upload('correct_file.csv', 'text/csv') }
 
