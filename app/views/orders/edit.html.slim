@@ -1,0 +1,45 @@
+.panel.panel-default
+  .panel-heading
+    h1 Edit Order
+
+  .panel-body
+    = simple_form_for @order do |f|
+      = f.error_notification
+
+      .row
+        .col-md-2
+          .form-group
+            = f.input :delivery_shift, as: :radio_buttons,
+                                       collection: Order::DELIVERY_SHIFTS
+          .form-group
+            = f.input :delivery_date
+
+        .col-md-5
+          = f.input :origin_name
+          = f.input :origin_address
+          = f.input :origin_city
+          = f.input :origin_state
+          = f.input :origin_zip
+          = f.input :origin_country, as: :string
+        .col-md-5
+          = f.input :destination_address
+          = f.input :destination_city
+          = f.input :destination_state
+          = f.input :destination_zip
+          = f.input :destination_country, as: :string
+      .row
+        .col-md-6
+          = f.input :client_name
+          = f.input :phone_number
+          = f.input :purchase_order_number
+        .col-md-6
+          = f.input :mode
+          = f.input :volume
+          = f.input :handling_unit_quantity
+          = f.input :handling_unit_type
+
+      .form-group
+        = f.submit 'Submit', class: 'btn btn-success'
+
+  .panel-footer
+    = link_to 'Back', orders_path, class: 'btn btn-primary'
