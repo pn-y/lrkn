@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161105222951) do
+ActiveRecord::Schema.define(version: 20161106130351) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -48,9 +48,9 @@ ActiveRecord::Schema.define(version: 20161105222951) do
     t.float    "volume"
     t.integer  "handling_unit_quantity"
     t.string   "handling_unit_type"
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
-    t.integer  "delivery_order"
+    t.datetime "created_at",                                                                       null: false
+    t.datetime "updated_at",                                                                       null: false
+    t.integer  "delivery_order",         default: "nextval('order_delivery_order_seq'::regclass)", null: false
     t.integer  "load_id"
   end
 

@@ -6,6 +6,7 @@ class LoadsController < ApplicationController
 
   def show
     @load = Load.find(params[:id])
+    @waypoints = @load.orders.by_deliry_order
     authorize @load
   end
 

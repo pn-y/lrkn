@@ -23,14 +23,14 @@ class OrdersController < ApplicationController
   def move_up
     order = Load.find(params[:load_id]).orders.find(params[:order_id])
     authorize order
-    order.decrease_delivery_order!
+    order.decrease_delivery_order_in_load!
     redirect_to load_url(id: params[:load_id])
   end
 
   def move_down
     order = Load.find(params[:load_id]).orders.find(params[:order_id])
     authorize order
-    order.increase_delivery_order!
+    order.increase_delivery_order_in_load!
     redirect_to load_url(id: params[:load_id])
   end
 

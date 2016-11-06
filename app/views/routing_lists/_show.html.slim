@@ -18,10 +18,10 @@
             / TODO: THINK ABOUT BOXES TO LOAD AND UNLOAD AT START AND FINISH
             td 1
             td colspan='4' Larkin LLC, starting
-          - @waypoints.each do |order|
+          - @waypoints.each_with_index do |order, idx|
             - it_is_return = returning_order?(order)
             tr
-              td = order.delivery_order
+              td = idx + 2
               - if it_is_return
                 td #{order.origin_name}
                   #{order.origin_address},

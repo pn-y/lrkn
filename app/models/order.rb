@@ -6,6 +6,8 @@ class Order < ActiveRecord::Base
   belongs_to :load, counter_cache: true
 
   validates :delivery_shift, inclusion: { in: DELIVERY_SHIFTS }, allow_nil: true
+  validates :delivery_order, uniqueness: { scope: :load_id },
+                             if: 'delivery_order.present? && load_id.present?'
 
   scope :with_shift_order, (lambda do
     order('coalesce(delivery_date) ASC NULLS FIRST',
@@ -33,14 +35,20 @@ class Order < ActiveRecord::Base
     end
   end
 
-  def decrease_delivery_order!
-    order_for_swap = Order.find_by(load_id: load_id, delivery_order: delivery_order - 1)
+  def decrease_delivery_order_in_load!
+    return if load_id.nil?
+    order_for_swap =
+      Order.where('load_id = ? and delivery_order < ?', load_id, delivery_order).
+      order(delivery_order: :DESC).limit(1).first
     return if order_for_swap.nil?
     Order.swap_delivery_order(self, order_for_swap)
   end
 
-  def increase_delivery_order!
-    order_for_swap = Order.find_by(load_id: load_id, delivery_order: delivery_order + 1)
+  def increase_delivery_order_in_load!
+    return if load_id.nil?
+    order_for_swap =
+      Order.where('load_id = ? and delivery_order > ?', load_id, delivery_order).
+      order(delivery_order: :ASC).limit(1).first
     return if order_for_swap.nil?
     Order.swap_delivery_order(self, order_for_swap)
   end
@@ -49,7 +57,7 @@ class Order < ActiveRecord::Base
     transaction do
       second_order_delivery_order = second_order.delivery_order
 
-      second_order.update!(delivery_order: nil)
+      second_order.update!(delivery_order: -second_order_delivery_order)
 
       second_order.delivery_order = first_order.delivery_order
       first_order.delivery_order = second_order_delivery_order
