@@ -36,30 +36,25 @@ class Order < ActiveRecord::Base
   def decrease_delivery_order!
     order_for_swap = Order.find_by(load_id: load_id, delivery_order: delivery_order - 1)
     return if order_for_swap.nil?
-    transaction do
-      swap_delivery_order = order_for_swap.delivery_order
-
-      order_for_swap.update!(delivery_order: nil)
-
-      order_for_swap.delivery_order = delivery_order
-      self.delivery_order = swap_delivery_order
-      save!
-      order_for_swap.save!
-    end
+    Order.swap_delivery_order(self, order_for_swap)
   end
 
   def increase_delivery_order!
     order_for_swap = Order.find_by(load_id: load_id, delivery_order: delivery_order + 1)
     return if order_for_swap.nil?
+    Order.swap_delivery_order(self, order_for_swap)
+  end
+
+  def self.swap_delivery_order(first_order, second_order)
     transaction do
-      swap_delivery_order = order_for_swap.delivery_order
+      second_order_delivery_order = second_order.delivery_order
 
-      order_for_swap.update!(delivery_order: nil)
+      second_order.update!(delivery_order: nil)
 
-      order_for_swap.delivery_order = delivery_order
-      self.delivery_order = swap_delivery_order
-      save!
-      order_for_swap.save!
+      second_order.delivery_order = first_order.delivery_order
+      first_order.delivery_order = second_order_delivery_order
+      first_order.save!
+      second_order.save!
     end
   end
 end
