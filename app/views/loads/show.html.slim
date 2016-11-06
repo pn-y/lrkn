@@ -19,24 +19,17 @@
             tr
               td = idx + 1
               - if it_is_return
-                td #{order.origin_name}
-                  #{order.origin_address},
+                td #{order.origin_address},
                   #{order.origin_city},
                   #{order.origin_state},
                   #{order.origin_zip}
               - else
-                td #{order.client_name}
-                  #{order.destination_address},
+                td #{order.destination_address},
                   #{order.destination_city},
                   #{order.destination_state},
                   #{order.destination_zip}
               td = order.volume
-              - if it_is_return
-                td load
-                  #{pluralize(order.handling_unit_quantity, order.handling_unit_type)}
-              - else
-                td unload
-                  #{pluralize(order.handling_unit_quantity, order.handling_unit_type)}
+              td = (it_is_return ? 'load ' : 'unload ') + pluralize(order.handling_unit_quantity, order.handling_unit_type)
               td
                 = link_to load_order_move_up_path(load_id: @load.id, order_id: order.id), method: :post
                   span.glyphicon.glyphicon-arrow-up

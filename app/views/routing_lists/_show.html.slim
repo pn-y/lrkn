@@ -36,12 +36,8 @@
                   #{order.destination_zip}
               td = order.purchase_order_number
               td #{order.client_name}, #{order.phone_number}
-              - if it_is_return
-                td load
-                  #{pluralize(order.handling_unit_quantity, order.handling_unit_type)}
-              - else
-                td unload
-                  #{pluralize(order.handling_unit_quantity, order.handling_unit_type)}
+              td = (it_is_return ? 'load ' : 'unload ') + pluralize(order.handling_unit_quantity, order.handling_unit_type)
+
           tr
             td = @routing_list.orders_count + 2
             td colspan='4' Larkin LLC, returning
