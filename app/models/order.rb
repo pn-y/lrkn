@@ -12,6 +12,8 @@ class Order < ActiveRecord::Base
           "(case delivery_shift when 'E' then 0 when 'N' then 1 when 'M' then 2 else -1 end) DESC")
   end)
 
+  scope :by_deliry_order, ->{ order('delivery_order ASC NULLS LAST') }
+
   def split!
     return if handling_unit_quantity == 1
     with_lock do
