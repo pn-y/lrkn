@@ -7,7 +7,7 @@ html
     = csrf_meta_tags
   body
     header.navbar.navbar-inverse
-      .container
+      .container-fluid
         .navbar-header
           = link_to "Larkin LLC", root_path, class: 'navbar-brand'
         .navbar-collapse.collapse
@@ -15,7 +15,7 @@ html
             - if current_user_dispatcher?
               li = link_to 'Upload orders', new_order_csv_uploader_path
               li = link_to 'Orders', orders_path
-              li = link_to 'Loads', '#'
+              li = link_to 'Loads', loads_path
             - if user_signed_in?
               li = link_to 'Routing list', '#'
           .nav.navbar-nav.navbar-right

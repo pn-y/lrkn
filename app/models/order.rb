@@ -3,10 +3,12 @@ class Order < ActiveRecord::Base
 
   DELIVERY_SHIFTS = %w(M N E).freeze
 
+  belongs_to :load, counter_cache: true
+
   validates :delivery_shift, inclusion: { in: DELIVERY_SHIFTS }, allow_nil: true
 
   scope :with_shift_order, (lambda do
-    order("coalesce(delivery_date) ASC NULLS FIRST",
+    order('coalesce(delivery_date) ASC NULLS FIRST',
           "(case delivery_shift when 'E' then 0 when 'N' then 1 when 'M' then 2 else -1 end) DESC")
   end)
 

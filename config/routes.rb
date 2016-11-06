@@ -12,7 +12,7 @@ Rails.application.routes.draw do
     end
   end
   resource :order_csv_uploader, only: [:new, :create]
-
+  resources :loads
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 

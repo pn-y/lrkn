@@ -1,0 +1,40 @@
+.panel.panel-default
+  .panel-heading
+    h2 Load
+      #{@load.delivery_date},
+      #{@load.delivery_shift}
+  .panel-body
+    table.table.table-striped.table-hover
+      thead
+        tr
+          th №
+          th Address
+          th Volume
+          th colspan='3' Cargo info
+      tbody
+        - if @load.orders_count > 0
+          tr
+          - @load.orders.order(:delivery_order).each do |order|
+            - it_is_return = returning_order?(order)
+            tr
+              td = order.delivery_order
+              - if it_is_return
+                td #{order.origin_name}
+                  #{order.origin_address},
+                  #{order.origin_city},
+                  #{order.origin_state},
+                  #{order.origin_zip}
+              - else
+                td #{order.client_name}
+                  #{order.destination_address},
+                  #{order.destination_city},
+                  #{order.destination_state},
+                  #{order.destination_zip}
+              td = order.volume
+              - if it_is_return
+                td load
+                  #{pluralize(order.handling_unit_quantity, order.handling_unit_type)}
+              - else
+                td unload
+                  #{pluralize(order.handling_unit_quantity, order.handling_unit_type)}
+              td

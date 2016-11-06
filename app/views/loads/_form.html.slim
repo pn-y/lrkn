@@ -1,0 +1,13 @@
+= simple_form_for @load do |f|
+  = f.error_notification
+
+  .form-group
+    = f.input :delivery_shift, as: :radio_buttons,
+                               collection: Order::DELIVERY_SHIFTS
+
+  .form-group
+    = f.input :delivery_date
+    = f.association :truck, label_method: :id
+
+  .form-group
+    = f.submit 'Submit', class: 'btn btn-success'

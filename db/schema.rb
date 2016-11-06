@@ -11,10 +11,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161103213026) do
+ActiveRecord::Schema.define(version: 20161105222951) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "loads", force: :cascade do |t|
+    t.date     "delivery_date"
+    t.string   "delivery_shift"
+    t.integer  "truck_id"
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+    t.integer  "orders_count",   default: 0, null: false
+  end
+
+  add_index "loads", ["truck_id"], name: "index_loads_on_truck_id", using: :btree
 
   create_table "orders", force: :cascade do |t|
     t.date     "delivery_date"
@@ -39,7 +50,12 @@ ActiveRecord::Schema.define(version: 20161103213026) do
     t.string   "handling_unit_type"
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
+    t.integer  "delivery_order"
+    t.integer  "load_id"
   end
+
+  add_index "orders", ["delivery_order", "load_id"], name: "index_orders_on_delivery_order_and_load_id", unique: true, where: "((load_id IS NOT NULL) AND (delivery_order IS NOT NULL))", using: :btree
+  add_index "orders", ["load_id"], name: "index_orders_on_load_id", using: :btree
 
   create_table "trucks", force: :cascade do |t|
     t.integer "user_id"
@@ -60,5 +76,7 @@ ActiveRecord::Schema.define(version: 20161103213026) do
 
   add_index "users", ["login"], name: "index_users_on_login", unique: true, using: :btree
 
+  add_foreign_key "loads", "trucks"
+  add_foreign_key "orders", "loads"
   add_foreign_key "trucks", "users"
 end

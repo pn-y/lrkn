@@ -1,0 +1,27 @@
+.panel.panel-default
+  .panel-heading
+    .row
+      .col-md-1
+        h2 Loads
+      .col-md-offset-10.col-md-1
+        = link_to 'New Load', new_load_path, class: 'btn btn-primary btn-vertical-align'
+  .panel-body
+    table.table.table-striped.table-hover
+      thead
+        tr
+          th Delivery date
+          th Delivery shift
+          th colspan='4' Truck
+      tbody
+        .text-center
+          = paginate @loads
+        - @loads.each do |load|
+          tr
+            td = load.delivery_date
+            td = load.delivery_shift
+            td = "Truck №#{load.truck.id}"
+            td = link_to 'Edit', edit_load_path(load), class: 'btn btn-default'
+            td = link_to 'Route plan', load_path(load), class: 'btn btn-default'
+            td = link_to 'Delete', load_path(load), class: 'btn btn-default',
+                                                                method: :delete,
+                                                                data: { confirm: "Are you sure?" }
