@@ -1,14 +1,17 @@
 class OrdersController < ApplicationController
   def index
-    @orders = Order.with_shift_order.page(params[:page])
+    @orders = policy_scope(Order).with_shift_order.page(params[:page])
+    authorize @orders
   end
 
   def edit
     @order = Order.find(params[:id])
+    authorize @order
   end
 
   def update
     @order = Order.find(params[:id])
+    authorize @order
     if @order.update(order_params)
       flash[:notice] = 'Order was successfully updated.'
       redirect_to orders_url
@@ -19,12 +22,14 @@ class OrdersController < ApplicationController
 
   def move_up
     order = Load.find(params[:load_id]).orders.find(params[:order_id])
+    authorize order
     order.decrease_delivery_order!
     redirect_to load_url(id: params[:load_id])
   end
 
   def move_down
     order = Load.find(params[:load_id]).orders.find(params[:order_id])
+    authorize order
     order.increase_delivery_order!
     redirect_to load_url(id: params[:load_id])
   end
@@ -32,6 +37,7 @@ class OrdersController < ApplicationController
   def split
     # TODO: dont allow split orders with load
     order = Order.find(params[:id])
+    authorize order
     order.split!
     redirect_to orders_url
   end

@@ -1,11 +1,13 @@
 class RoutingListsController < ApplicationController
   def index
-    @routing_lists = Load.by_date_and_shift.page(params[:page])
+    @routing_lists = policy_scope(Load).by_date_and_shift.page(params[:page])
+    authorize @routing_lists
   end
 
   def show
     @routing_list = Load.find(params[:id])
     @waypoints = @routing_list.orders.by_deliry_order
+    authorize @routing_list
 
     respond_to do |format|
       format.html

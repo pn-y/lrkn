@@ -1,18 +1,22 @@
 class LoadsController < ApplicationController
   def index
-    @loads = Load.by_date_and_shift.page(params[:page])
+    @loads = policy_scope(Load).by_date_and_shift.page(params[:page])
+    authorize @loads
   end
 
   def show
     @load = Load.find(params[:id])
+    authorize @load
   end
 
   def new
     @load = Load.new
+    authorize @load
   end
 
   def create
     @load = Load.new(load_params)
+    authorize @load
     if @load.save
       flash[:notice] = 'You successfully created load.'
       redirect_to @load
@@ -23,10 +27,12 @@ class LoadsController < ApplicationController
 
   def edit
     @load = Load.find(params[:id])
+    authorize @load
   end
 
   def update
     @load = Load.find(params[:id])
+    authorize @load
     if @load.update(load_params)
       flash[:notice] = 'Load was successfully updated.'
       redirect_to @load
@@ -37,6 +43,7 @@ class LoadsController < ApplicationController
 
   def destroy
     resource = Load.find(params[:id])
+    authorize resource
     resource.destroy
     if request.referer
       redirect_to :back
