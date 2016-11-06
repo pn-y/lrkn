@@ -30,6 +30,7 @@ class OrdersController < ApplicationController
   end
 
   def split
+    # TODO: dont allow split orders with load
     order = Order.find(params[:id])
     order.split!
     redirect_to orders_url

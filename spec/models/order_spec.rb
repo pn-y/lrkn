@@ -26,4 +26,31 @@ RSpec.describe Order, type: :model do
       expect(second_order.reload.delivery_order).to eq(1)
     end
   end
+
+  describe '#split!' do
+    context 'when quantity <= 1' do
+      let!(:order) { create :order, handling_unit_quantity: 1 }
+
+      it { expect { order.split! }.not_to change(Order, :count) }
+      it { expect(order.handling_unit_quantity).to eq(1) }
+    end
+
+    context 'when quantity > 1' do
+      let!(:order) { create :order, handling_unit_quantity: 7, volume: 19 }
+
+      it { expect { order.split! }.to change(Order, :count).by(1) }
+
+      it do
+        order.split!
+        expect(order.handling_unit_quantity).to eq(4)
+        expect(order.volume.round(2)).to eq(10.86)
+
+        expect(Order.last.handling_unit_quantity).to eq(3)
+        expect(Order.last.volume.round(2)).to eq(8.14)
+
+        expect(order.handling_unit_quantity + Order.last.handling_unit_quantity).to eq(7)
+        expect(order.volume.round(2) + Order.last.volume.round(2)).to eq(19)
+      end
+    end
+  end
 end
