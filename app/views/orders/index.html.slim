@@ -37,3 +37,4 @@
               td = order.destination_state
             td = link_to 'Split', split_order_path(order), method: :post, class: 'btn btn-default'
             td = link_to 'Edit', edit_order_path(order), class: 'btn btn-default'
+            td = link_to 'Unload', remove_from_load_order_path(order), method: :post, class: 'btn btn-default'

@@ -6,6 +6,7 @@ RSpec.describe OrdersController, type: :controller do
   let!(:order_1) { create :order, load_id: load.id, delivery_order: 1 }
   let!(:order_2) { create :order, load_id: load.id, delivery_order: 2 }
   let!(:order_3) { create :order, load_id: load.id, delivery_order: 3 }
+  let!(:order_4) { create :order }
 
   before { sign_in(user) }
 
@@ -17,13 +18,13 @@ RSpec.describe OrdersController, type: :controller do
 
   describe do
     describe 'GET #edit' do
-      subject { get :edit, id: order_1.id }
+      subject { get :edit, id: order_4.id }
 
       it { is_expected.to have_http_status(200) }
     end
 
     describe 'PATCH #update' do
-      subject { patch :update, id: order_1.id, order: attributes_for(:order) }
+      subject { patch :update, id: order_4.id, order: attributes_for(:order) }
 
       it { is_expected.to have_http_status(302) }
     end

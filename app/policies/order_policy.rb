@@ -4,7 +4,7 @@ class OrderPolicy < ApplicationPolicy
   end
 
   def update?
-    dispatcher?
+    dispatcher? && record.load_id.nil?
   end
 
   def move_up?
@@ -16,6 +16,10 @@ class OrderPolicy < ApplicationPolicy
   end
 
   def split?
+    dispatcher? && record.load_id.nil?
+  end
+
+  def remove_from_load?
     dispatcher?
   end
 end

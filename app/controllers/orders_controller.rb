@@ -42,6 +42,13 @@ class OrdersController < ApplicationController
     redirect_to orders_url
   end
 
+  def remove_from_load
+    order = Order.find(params[:id])
+    authorize order
+    order.remove_from_load!
+    redirect_to orders_url
+  end
+
   private
 
   def order_params

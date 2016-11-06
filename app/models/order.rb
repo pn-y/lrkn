@@ -11,7 +11,8 @@ class Order < ActiveRecord::Base
 
   scope :with_shift_order, (lambda do
     order('coalesce(delivery_date) ASC NULLS FIRST',
-          "(case delivery_shift when 'E' then 0 when 'N' then 1 when 'M' then 2 else -1 end) DESC")
+          "(case delivery_shift when 'E' then 0 when 'N' then 1 when 'M' then 2 else -1 end) DESC",
+          'destination_address')
   end)
 
   scope :by_deliry_order, -> { order('delivery_order ASC NULLS LAST') }
@@ -51,6 +52,10 @@ class Order < ActiveRecord::Base
       order(delivery_order: :ASC).limit(1).first
     return if order_for_swap.nil?
     Order.swap_delivery_order(self, order_for_swap)
+  end
+
+  def remove_from_load!
+    update(load_id: nil)
   end
 
   def self.swap_delivery_order(first_order, second_order)

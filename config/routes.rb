@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   resources :pages, only: :dashboard
   resources :orders, only: [:index, :edit, :update] do
     member do
+      post :remove_from_load
       post :split
     end
   end
