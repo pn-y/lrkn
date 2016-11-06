@@ -37,6 +37,9 @@
           = f.input :volume
           = f.input :handling_unit_quantity
           = f.input :handling_unit_type
+          = f.association :load, label_method: (lambda do |l| \
+            "#{l.delivery_date}, #{l.delivery_shift}, Truck №#{l.truck.id}"\
+          end)
 
       .form-group
         = f.submit 'Submit', class: 'btn btn-success'

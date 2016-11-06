@@ -17,6 +17,18 @@ class OrdersController < ApplicationController
     end
   end
 
+  def move_up
+    order = Load.find(params[:load_id]).orders.find(params[:order_id])
+    order.decrease_delivery_order!
+    redirect_to load_url(id: params[:load_id])
+  end
+
+  def move_down
+    order = Load.find(params[:load_id]).orders.find(params[:order_id])
+    order.increase_delivery_order!
+    redirect_to load_url(id: params[:load_id])
+  end
+
   def split
     order = Order.find(params[:id])
     order.split!

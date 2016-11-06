@@ -12,7 +12,12 @@ Rails.application.routes.draw do
     end
   end
   resource :order_csv_uploader, only: [:new, :create]
-  resources :loads
+  resources :loads do
+    resources :orders, only: [] do
+      post :move_up
+      post :move_down
+    end
+  end
   resources :routing_lists, only: [:index, :show]
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'

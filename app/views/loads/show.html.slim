@@ -38,3 +38,8 @@
                 td unload
                   #{pluralize(order.handling_unit_quantity, order.handling_unit_type)}
               td
+                = link_to load_order_move_up_path(load_id: @load.id, order_id: order.id), method: :post
+                  span.glyphicon.glyphicon-arrow-up
+              td
+                = link_to load_order_move_down_path(load_id: @load.id, order_id: order.id), method: :post
+                  span.glyphicon.glyphicon-arrow-down
