@@ -28,6 +28,8 @@ gem 'puma'
 gem 'slim-rails'
 gem 'kaminari'
 gem 'simple_form'
+gem 'wicked_pdf'
+gem 'wkhtmltopdf-binary'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
