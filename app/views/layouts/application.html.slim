@@ -17,7 +17,7 @@ html
               li = link_to 'Orders', orders_path
               li = link_to 'Loads', loads_path
             - if user_signed_in?
-              li = link_to 'Routing list', routing_lists_path
+              li = link_to 'Routes list', route_lists_path
           .nav.navbar-nav.navbar-right
             - if user_signed_in?
               li = link_to 'Sign out', destroy_user_session_path, method: :delete

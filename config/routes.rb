@@ -19,7 +19,7 @@ Rails.application.routes.draw do
       post :move_down
     end
   end
-  resources :routing_lists, only: [:index, :show]
+  resources :route_lists, only: [:index, :show]
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 

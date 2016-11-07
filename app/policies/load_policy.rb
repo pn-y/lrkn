@@ -1,9 +1,13 @@
 class LoadPolicy < ApplicationPolicy
   def index?
-    true
+    dispatcher?
   end
 
   def create?
+    dispatcher?
+  end
+
+  def show?
     dispatcher?
   end
 

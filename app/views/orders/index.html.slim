@@ -13,6 +13,7 @@
           th Address
           th City
           th State
+          th Units
       tbody
         .text-center
           = paginate @orders
@@ -34,8 +35,9 @@
               td = order.destination_address
               td = order.destination_city
               td = order.destination_state
+            td = pluralize(order.handling_unit_quantity, order.handling_unit_type)
             td.actions-column
               .btn-group
                 = link_to 'Edit', edit_order_path(order), class: 'btn btn-default'
                 = link_to 'Split', split_order_path(order), method: :post, class: 'btn btn-warning'
-                = link_to 'Unload', remove_from_load_order_path(order), method: :post, class: 'btn btn-danger'
+                = link_to 'Unload', remove_from_load_order_path(order), method: :post, class: 'btn btn-danger', data: { confirm: "Are you sure?" }

@@ -29,3 +29,5 @@
               td
                 = link_to load_order_move_down_path(load_id: @load.id, order_id: order.id), method: :post
                   span.glyphicon.glyphicon-arrow-down
+  .panel-footer
+    = link_to 'Back', loads_path, class: 'btn btn-primary'

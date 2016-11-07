@@ -1,0 +1,22 @@
+.panel.panel-default
+  .panel-heading
+    h2 Routes list
+  .panel-body
+    table.table.table-striped.table-hover
+      thead
+        tr
+          th Delivery date
+          th Delivery shift
+          th colspan='2'Truck
+      tbody
+        .text-center
+          = paginate @route_lists
+        - @route_lists.each do |route_list|
+          tr
+            td = route_list.delivery_date
+            td = route_list.delivery_shift
+            td Truck №#{route_list.truck&.id}
+            td.actions-column
+              .btn-group
+                = link_to 'Show', route_list_path(route_list), class: 'btn btn-default'
+                = link_to 'Download', route_list_path(route_list, format: :pdf), class: 'btn btn-default'

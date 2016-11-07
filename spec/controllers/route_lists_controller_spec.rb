@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe RoutingListsController, type: :controller do
+RSpec.describe RouteListsController, type: :controller do
   render_views
 
   let(:user) { create :user }
@@ -31,7 +31,7 @@ RSpec.describe RoutingListsController, type: :controller do
         is_expected.to have_http_status(200)
         expect(response.headers['Content-Type']).to eq('application/pdf')
         expect(response.headers['Content-Disposition']).
-          to eq('attachment; filename="routing list for '\
+          to eq('attachment; filename="route list for '\
                 "#{load.delivery_shift} #{load.delivery_date}.pdf\"")
       end
     end

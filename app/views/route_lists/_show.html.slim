@@ -2,9 +2,9 @@
   .panel-heading
     .row
       .col-md-4
-        h2 Routing list for #{@routing_list.delivery_date}, #{@routing_list.delivery_shift}
+        h2 Route list for #{@route_list.delivery_date}, #{@route_list.delivery_shift}
       .col-md-offset-7.col-md-1
-        = link_to 'Download', routing_list_path(@routing_list, format: :pdf),
+        = link_to 'Download', route_list_path(@route_list, format: :pdf),
                                            class: 'btn btn-primary btn-vertical-align'
   .panel-body
     table.table.table-striped.table-hover
@@ -16,7 +16,7 @@
           th Phone
           th Cargo info
       tbody
-        - if @routing_list.orders_count > 0
+        - if @route_list.orders_count > 0
           tr
             / TODO: THINK ABOUT BOXES TO LOAD AND UNLOAD AT START AND FINISH
             td 1
@@ -31,5 +31,8 @@
               td = cargo_string(order)
 
           tr
-            td = @routing_list.orders_count + 2
+            td = @route_list.orders_count + 2
             td colspan='4' Larkin LLC, returning
+
+  .panel-footer
+    = link_to 'Back', route_lists_path, class: 'btn btn-primary'

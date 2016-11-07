@@ -29,8 +29,8 @@ RSpec.describe OrdersHelper, type: :helper do
     end
   end
 
-  describe '#routing_list_address_string' do
-    subject { routing_list_address_string(order) }
+  describe '#route_list_address_string' do
+    subject { route_list_address_string(order) }
 
     context 'when returning order' do
       let(:order) { create :order }

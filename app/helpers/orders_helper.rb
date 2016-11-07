@@ -33,7 +33,7 @@ module OrdersHelper
     verb + pluralize(order.handling_unit_quantity, order.handling_unit_type)
   end
 
-  def routing_list_address_string(order)
+  def route_list_address_string(order)
     it_is_return = returning_order?(order)
     if it_is_return
       "#{order.origin_address}, #{order.origin_city}, #{order.origin_state}, #{order.origin_zip}"

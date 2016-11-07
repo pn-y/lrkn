@@ -6,7 +6,9 @@
 
   = f.input :delivery_date, html5: true,
                             input_html: { value: f.object.delivery_date || Date.current}
-  = f.input :truck_id, as: :select, collection: Truck.pluck(:id)
+  = f.input :truck_id, as: :select,
+                       collection: Truck.pluck(:id),
+                       label_method: lambda { |x| "Truck №#{x}"}
 
   .form-group
     = f.fields_for :orders do |order|
