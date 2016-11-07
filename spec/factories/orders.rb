@@ -20,5 +20,12 @@ FactoryGirl.define do
     volume '15.53'
     handling_unit_quantity 7
     handling_unit_type 'box'
+
+    trait :returning do
+      client_name 'Larkin LLC'
+      origin_name 'Andrew Reilly'
+    end
+
+    factory :order_returning, traits: [:returning]
   end
 end

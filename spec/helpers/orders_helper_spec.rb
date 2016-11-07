@@ -11,5 +11,39 @@ require 'rails_helper'
 #   end
 # end
 RSpec.describe OrdersHelper, type: :helper do
-  pending "add some examples to (or delete) #{__FILE__}"
+  describe '#order_label_for_load' do
+    subject { order_label_for_load(order) }
+
+    context 'when returning order' do
+      let(:order) { create :order }
+
+      it do
+        is_expected.to eq('2016-11-07, E 627 GARFIELD DRIVE, FORT BRAGG, NC, 283047, box, 15.53')
+      end
+    end
+
+    context 'when not returning order' do
+      let(:order) { create :order_returning }
+
+      it { is_expected.to eq('2016-11-07, E 1505 S BLOUNT ST, RALEIGH, NC, 276037, box, 15.53') }
+    end
+  end
+
+  describe '#routing_list_address_string' do
+    subject { routing_list_address_string(order) }
+
+    context 'when returning order' do
+      let(:order) { create :order }
+
+      it do
+        is_expected.to eq('627 GARFIELD DRIVE, FORT BRAGG, NC, 28304')
+      end
+    end
+
+    context 'when not returning order' do
+      let(:order) { create :order_returning }
+
+      it { is_expected.to eq('1505 S BLOUNT ST, RALEIGH, NC, 27603') }
+    end
+  end
 end
