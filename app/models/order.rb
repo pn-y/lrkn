@@ -18,7 +18,7 @@ class Order < ActiveRecord::Base
   scope :by_deliry_order, -> { order('delivery_order ASC NULLS LAST') }
 
   def split!
-    return if handling_unit_quantity <= 1
+    return if handling_unit_quantity.nil? || handling_unit_quantity <= 1
     with_lock do
       new_order = dup
 
@@ -30,6 +30,9 @@ class Order < ActiveRecord::Base
 
       new_order.volume = volume * new_order.handling_unit_quantity / original_quantity
       self.volume = original_volume - new_order.volume
+
+      new_order.delivery_order =
+        ActiveRecord::Base.connection.select_value("SELECT nextval('order_delivery_order_seq')")
 
       save!
       new_order.save!
