@@ -26,9 +26,7 @@ RSpec.describe LoadsController, type: :controller do
   end
 
   describe 'POST #create' do
-    let!(:truck) { create :truck }
-
-    subject { post :create, load: attributes_for(:load, truck_id: truck.id) }
+    subject { post :create, load: attributes_for(:load_attrs) }
 
     it { is_expected.to have_http_status(302) }
   end
@@ -42,7 +40,7 @@ RSpec.describe LoadsController, type: :controller do
     end
 
     describe 'PATCH #update' do
-      subject { patch :update, id: load.id, load: attributes_for(:load, truck_id: load.truck_id) }
+      subject { patch :update, id: load.id, load: attributes_for(:load_attrs) }
 
       it { is_expected.to have_http_status(302) }
     end

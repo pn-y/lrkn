@@ -35,7 +35,6 @@ class OrdersController < ApplicationController
   end
 
   def split
-    # TODO: dont allow split orders with load
     order = Order.find(params[:id])
     authorize order
     order.split!

@@ -57,6 +57,9 @@ RSpec.configure do |config|
 
   config.include Devise::Test::ControllerHelpers, type: :controller
   config.include FactoryGirl::Syntax::Methods
+
+  config.include Shoulda::Matchers::ActiveModel, type: :operation
+  config.include Shoulda::Matchers::ActiveRecord, type: :operation
 end
 
 Shoulda::Matchers.configure do |config|
