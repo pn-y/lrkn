@@ -38,10 +38,22 @@ RSpec.describe OrdersController, type: :controller do
     it { is_expected.to redirect_to(orders_url) }
   end
 
+  describe 'POST #remove_from_load' do
+    subject { post :remove_from_load, id: order_2.id }
+
+    it { is_expected.to redirect_to(orders_url) }
+
+    it 'increases delivery order' do
+      subject
+      expect(Order.find(order_2.id).load_id).to be_nil
+    end
+  end
+
   describe 'POST #move_up' do
     subject { post :move_up, load_id: load.id, order_id: order_2.id }
 
     it { is_expected.to redirect_to(load_url(load)) }
+
     it 'decreases delivery order' do
       subject
       expect(Order.find(order_2.id).delivery_order).to eq(1)
@@ -52,6 +64,7 @@ RSpec.describe OrdersController, type: :controller do
     subject { post :move_down, load_id: load.id, order_id: order_2.id }
 
     it { is_expected.to redirect_to(load_url(load)) }
+
     it 'increases delivery order' do
       subject
       expect(Order.find(order_2.id).delivery_order).to eq(3)
