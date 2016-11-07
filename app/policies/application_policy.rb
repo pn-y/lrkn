@@ -1,5 +1,5 @@
 class ApplicationPolicy
-  delegate :dispatcher?, to: :user
+  delegate :dispatcher?, to: :user, allow_nil: true
 
   attr_reader :user, :record
 
