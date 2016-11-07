@@ -6,7 +6,8 @@
       thead
         tr
           th Delivery date
-          th colspan='3' Delivery shift
+          th Delivery shift
+          th colspan='2'Truck №
       tbody
         .text-center
           = paginate @routing_lists
@@ -14,5 +15,8 @@
           tr
             td = routing_list.delivery_date
             td = routing_list.delivery_shift
-            td = link_to 'Show', routing_list_path(routing_list), class: 'btn btn-default'
-            td = link_to 'Download', routing_list_path(routing_list, format: :pdf), class: 'btn btn-default'
+            td Truck №#{routing_list.truck&.id}
+            td.actions-column
+              .btn-group
+                = link_to 'Show', routing_list_path(routing_list), class: 'btn btn-default'
+                = link_to 'Download', routing_list_path(routing_list, format: :pdf), class: 'btn btn-default'

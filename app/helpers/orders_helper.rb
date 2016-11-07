@@ -49,4 +49,22 @@ module OrdersHelper
     client_name = it_is_return ? order.origin_name : order.client_name
     "#{client_name},  #{order.phone_number}"
   end
+
+  def order_row_style(order)
+    if order.load_id
+      'info'
+    elsif returning_order?(order)
+      'warning'
+    elsif danger_order?(order)
+      'danger'
+    end
+  end
+
+  def danger_order?(order)
+    order.handling_unit_quantity.blank? ||
+      order.handling_unit_quantity.zero? ||
+      order.volume.blank? ||
+      order.volume.zero? ||
+      order.delivery_date.blank?
+  end
 end

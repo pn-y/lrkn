@@ -11,7 +11,7 @@
         tr
           th Delivery date
           th Delivery shift
-          th colspan='4' Truck
+          th colspan='2' Truck
       tbody
         .text-center
           = paginate @loads
@@ -20,8 +20,10 @@
             td = load.delivery_date
             td = load.delivery_shift
             td = "Truck №#{load.truck.id}"
-            td = link_to 'Edit', edit_load_path(load), class: 'btn btn-default'
-            td = link_to 'Route plan', load_path(load), class: 'btn btn-default'
-            td = link_to 'Delete', load_path(load), class: 'btn btn-default',
-                                                                method: :delete,
-                                                                data: { confirm: "Are you sure?" }
+            td.actions-column
+              .btn-group
+                = link_to 'Edit', edit_load_path(load), class: 'btn btn-default'
+                = link_to 'Route plan', load_path(load), class: 'btn btn-default'
+                = link_to 'Delete', load_path(load), class: 'btn btn-danger',
+                                                                  method: :delete,
+                                                                  data: { confirm: "Are you sure?" }

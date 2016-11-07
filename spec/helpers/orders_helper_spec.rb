@@ -46,4 +46,26 @@ RSpec.describe OrdersHelper, type: :helper do
       it { is_expected.to eq('1505 S BLOUNT ST, RALEIGH, NC, 27603') }
     end
   end
+
+  describe '#order_row_style' do
+    subject { order_row_style(order) }
+
+    context 'loaded order' do
+      let(:order) { create :order, load: (create :load) }
+
+      it { is_expected.to eq('info') }
+    end
+
+    context 'danger order' do
+      let(:order) { create :order, delivery_date: nil }
+
+      it { is_expected.to eq('danger') }
+    end
+
+    context 'order for return' do
+      let(:order) { create :order_returning }
+
+      it { is_expected.to eq('warning') }
+    end
+  end
 end

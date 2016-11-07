@@ -12,14 +12,13 @@
           th Phone
           th Address
           th City
-          th colspan='3' State
+          th State
       tbody
         .text-center
           = paginate @orders
         - @orders.each do |order|
           - it_is_return = returning_order?(order)
-          - tr_class = it_is_return ? 'warning' : ''
-          tr class=tr_class
+          tr class=order_row_style(order)
             td = order.delivery_date
             td = order.delivery_shift
             td = order.purchase_order_number
@@ -35,6 +34,8 @@
               td = order.destination_address
               td = order.destination_city
               td = order.destination_state
-            td = link_to 'Split', split_order_path(order), method: :post, class: 'btn btn-default'
-            td = link_to 'Edit', edit_order_path(order), class: 'btn btn-default'
-            td = link_to 'Unload', remove_from_load_order_path(order), method: :post, class: 'btn btn-default'
+            td.actions-column
+              .btn-group
+                = link_to 'Edit', edit_order_path(order), class: 'btn btn-default'
+                = link_to 'Split', split_order_path(order), method: :post, class: 'btn btn-warning'
+                = link_to 'Unload', remove_from_load_order_path(order), method: :post, class: 'btn btn-danger'
