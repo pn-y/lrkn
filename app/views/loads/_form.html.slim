@@ -1,13 +1,34 @@
-= simple_form_for @load do |f|
+= simple_nested_form_for @form do |f|
   = f.error_notification
 
-  .form-group
-    = f.input :delivery_shift, as: :radio_buttons,
-                               collection: Order::DELIVERY_SHIFTS
+  = f.input :delivery_shift, as: :radio_buttons,
+                             collection: Order::DELIVERY_SHIFTS
+
+  = f.input :delivery_date, html5: true,
+                            input_html: { value: f.object.delivery_date || Date.current}
+  = f.input :truck_id, as: :select, collection: Truck.pluck(:id)
 
   .form-group
-    = f.input :delivery_date
-    = f.association :truck, label_method: :id
+    = f.fields_for :orders do |order|
+      - if order.object.id
+        .row
+          .col-md-8
+            = order.input :order
+              '
+              = order_label_for_load(order.object)
+          .col-md-4
+            = order.link_to_remove "Remove this order", class: 'btn btn-warning'
+      - else
+        .row
+          .col-md-8
+            = order.input :id, as: :select,
+                               collection: Order.undelivered.with_shift_order.map {|x| [x.id, order_label_for_load(x)]} ,
+                               label_method: :last,
+                               value_method: :first,
+                               label: 'Order'
+          .col-md-4.remove-link-vertical-align
+            = order.link_to_remove "Remove this order", class: 'btn btn-warning'
+    = f.link_to_add "Add an order", :orders, class: 'btn btn-default'
 
   .form-group
     = f.submit 'Submit', class: 'btn btn-success'

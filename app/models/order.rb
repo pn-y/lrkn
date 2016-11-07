@@ -15,6 +15,8 @@ class Order < ActiveRecord::Base
           'destination_address')
   end)
 
+  scope :undelivered, -> { where(load_id: nil) }
+
   scope :by_deliry_order, -> { order('delivery_order ASC NULLS LAST') }
 
   def split!

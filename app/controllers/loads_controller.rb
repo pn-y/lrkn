@@ -11,35 +11,29 @@ class LoadsController < ApplicationController
   end
 
   def new
-    @load = Load.new
-    authorize @load
+    trb_preparing
+    form Load::Create
   end
 
   def create
-    @load = Load.new(load_params)
-    authorize @load
-    if @load.save
-      flash[:notice] = 'You successfully created load.'
-      redirect_to @load
-    else
-      render :new
+    trb_preparing
+    run Load::Create do |op|
+      return redirect_to op.model
     end
+    render :new
   end
 
   def edit
-    @load = Load.find(params[:id])
-    authorize @load
+    trb_preparing
+    form Load::Update
   end
 
   def update
-    @load = Load.find(params[:id])
-    authorize @load
-    if @load.update(load_params)
-      flash[:notice] = 'Load was successfully updated.'
-      redirect_to @load
-    else
-      render :edit
+    trb_preparing
+    run Load::Update do |op|
+      return redirect_to op.model
     end
+    render :edit
   end
 
   def destroy
@@ -55,7 +49,8 @@ class LoadsController < ApplicationController
 
   private
 
-  def load_params
-    params.require(:load).permit(:delivery_shift, :delivery_date, :truck_id)
+  def trb_preparing
+    skip_authorization
+    params.merge!(current_user: current_user)
   end
 end
