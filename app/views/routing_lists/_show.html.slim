@@ -1,8 +1,11 @@
 .panel.panel-default
   .panel-heading
-    h2 Routing list for
-      #{@routing_list.delivery_date},
-      #{@routing_list.delivery_shift}
+    .row
+      .col-md-4
+        h2 Routing list for #{@routing_list.delivery_date}, #{@routing_list.delivery_shift}
+      .col-md-offset-7.col-md-1
+        = link_to 'Download', routing_list_path(@routing_list, format: :pdf),
+                                           class: 'btn btn-primary btn-vertical-align'
   .panel-body
     table.table.table-striped.table-hover
       thead
@@ -22,21 +25,10 @@
             - it_is_return = returning_order?(order)
             tr
               td = idx + 2
-              - if it_is_return
-                td #{order.origin_name}
-                  #{order.origin_address},
-                  #{order.origin_city},
-                  #{order.origin_state},
-                  #{order.origin_zip}
-              - else
-                td #{order.client_name}
-                  #{order.destination_address},
-                  #{order.destination_city},
-                  #{order.destination_state},
-                  #{order.destination_zip}
+              td = address_string(order)
               td = order.purchase_order_number
-              td #{order.client_name}, #{order.phone_number}
-              td = (it_is_return ? 'load ' : 'unload ') + pluralize(order.handling_unit_quantity, order.handling_unit_type)
+              td = contacts_string(order)
+              td = cargo_string(order)
 
           tr
             td = @routing_list.orders_count + 2
