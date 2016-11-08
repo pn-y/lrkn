@@ -5,6 +5,8 @@ class Order < ActiveRecord::Base
 
   belongs_to :load, counter_cache: true
 
+  validates :volume, numericality: { less_than: 100_000, greater_than_or_equal_to: 0 },
+                     allow_nil: true
   validates :delivery_shift, inclusion: { in: DELIVERY_SHIFTS }, allow_nil: true
   validates :delivery_order, uniqueness: { scope: :load_id },
                              if: 'delivery_order.present? && load_id.present?'

@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :order do
-    delivery_date Date.current
+    delivery_date '01.11.2016'
     delivery_shift 'E'
     origin_name 'Larkin LLC'
     origin_address '1505 S BLOUNT ST'
@@ -17,7 +17,7 @@ FactoryGirl.define do
     phone_number '(845)236-7280 x922'
     mode 'TRUCKLOAD'
     purchase_order_number '500394170'
-    volume '15.53'
+    volume 15.53
     handling_unit_quantity 7
     handling_unit_type 'box'
 

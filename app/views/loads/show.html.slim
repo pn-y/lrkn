@@ -22,7 +22,7 @@
               td = idx + 1
               td = address_string(order)
               td = order.volume
-              td = cargo_string(order)
+              td = load_cargo_string(order)
               td
                 = link_to load_order_move_up_path(load_id: @load.id, order_id: order.id), method: :post
                   span.glyphicon.glyphicon-arrow-up

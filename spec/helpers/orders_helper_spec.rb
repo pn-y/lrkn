@@ -18,14 +18,14 @@ RSpec.describe OrdersHelper, type: :helper do
       let(:order) { create :order }
 
       it do
-        is_expected.to eq('2016-11-07, E 627 GARFIELD DRIVE, FORT BRAGG, NC, 283047, box, 15.53')
+        is_expected.to eq('2016-11-01, E 627 GARFIELD DRIVE, FORT BRAGG, NC, 283047, box, 15.53')
       end
     end
 
     context 'when not returning order' do
       let(:order) { create :order_returning }
 
-      it { is_expected.to eq('2016-11-07, E 1505 S BLOUNT ST, RALEIGH, NC, 276037, box, 15.53') }
+      it { is_expected.to eq('2016-11-01, E 1505 S BLOUNT ST, RALEIGH, NC, 276037, box, 15.53') }
     end
   end
 

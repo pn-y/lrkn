@@ -28,7 +28,7 @@
               td = address_string(order)
               td = order.purchase_order_number
               td = contacts_string(order)
-              td = cargo_string(order)
+              td = load_cargo_string(order)
 
           tr
             td = @route_list.orders_count + 2

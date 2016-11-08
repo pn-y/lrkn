@@ -3,6 +3,10 @@ require 'rails_helper'
 RSpec.describe Order, type: :model do
   describe 'validations' do
     it { should validate_inclusion_of(:delivery_shift).in_array(%w(E N M)).allow_nil }
+    it do
+      should validate_numericality_of(:volume).
+        is_less_than(100_000).is_greater_than_or_equal_to(0).allow_nil
+    end
   end
 
   describe '#decrease_delivery_order_in_load!' do
@@ -38,20 +42,20 @@ RSpec.describe Order, type: :model do
     end
 
     context 'when quantity > 1' do
-      let!(:order) { create :order, handling_unit_quantity: 7, volume: 19 }
+      let!(:order) { create :order, handling_unit_quantity: 7, volume: 21 }
 
       it { expect { order.split! }.to change(Order, :count).by(1) }
 
       it do
         order.split!
         expect(order.handling_unit_quantity).to eq(4)
-        expect(order.volume.round(2)).to eq(10.86)
+        expect(order.volume).to eq(12)
 
         expect(Order.last.handling_unit_quantity).to eq(3)
-        expect(Order.last.volume.round(2)).to eq(8.14)
+        expect(Order.last.volume).to eq(9)
 
         expect(order.handling_unit_quantity + Order.last.handling_unit_quantity).to eq(7)
-        expect(order.volume.round(2) + Order.last.volume.round(2)).to eq(19)
+        expect(order.volume + Order.last.volume).to eq(21)
       end
     end
   end

@@ -26,11 +26,17 @@ module OrdersHelper
     end
   end
 
-  def cargo_string(order)
+  def load_cargo_string(order)
+    return unless order.handling_unit_quantity && order.handling_unit_type
     it_is_return = returning_order?(order)
 
     verb = it_is_return ? 'load ' : 'unload '
-    verb + pluralize(order.handling_unit_quantity, order.handling_unit_type)
+    verb + cargo_string(order)
+  end
+
+  def cargo_string(order)
+    return unless order.handling_unit_quantity && order.handling_unit_type
+    pluralize(order.handling_unit_quantity, order.handling_unit_type)
   end
 
   def route_list_address_string(order)

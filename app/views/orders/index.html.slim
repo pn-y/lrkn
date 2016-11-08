@@ -35,7 +35,7 @@
               td = order.destination_address
               td = order.destination_city
               td = order.destination_state
-            td = pluralize(order.handling_unit_quantity, order.handling_unit_type)
+            td = cargo_string(order)
             td.actions-column
               .btn-group
                 = link_to 'Edit', edit_order_path(order), class: 'btn btn-default'
