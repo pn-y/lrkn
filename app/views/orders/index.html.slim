@@ -1,6 +1,13 @@
 .panel.panel-default
   .panel-heading
-    h2 Orders
+    .row
+      .col-md-1
+        h2 Orders
+      .col-md-offset-8.col-md-3
+        .btn-group
+          = link_to 'All', orders_path, class: 'btn btn-default btn-vertical-align'
+          = link_to 'Scheduled', orders_path(scheduled: true), class: 'btn btn-default btn-vertical-align'
+          = link_to 'Not scheduled', orders_path(scheduled: false), class: 'btn btn-default btn-vertical-align'
   .panel-body
     table.table.table-striped.table-hover
       thead

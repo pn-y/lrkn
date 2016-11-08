@@ -1,6 +1,6 @@
 class OrdersController < ApplicationController
   def index
-    @orders = policy_scope(Order).with_shift_order.page(params[:page])
+    @orders = policy_scope(Order).scheduled(params[:scheduled]).with_shift_order.page(params[:page])
     authorize @orders
   end
 

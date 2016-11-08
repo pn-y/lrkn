@@ -17,6 +17,14 @@ class Order < ActiveRecord::Base
           'destination_address')
   end)
 
+  scope :scheduled, (lambda do |value|
+    if value == 'true'
+      where.not(load_id: nil)
+    elsif value == 'false'
+      undelivered
+    end
+  end)
+
   scope :undelivered, -> { where(load_id: nil) }
 
   scope :by_deliry_order, -> { order('delivery_order ASC NULLS LAST') }
