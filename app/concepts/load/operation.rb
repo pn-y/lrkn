@@ -70,7 +70,7 @@ class Load
                                    truck_id: truck_id).
                         where.not(id: id)
         if existing_load.present?
-          errors.add(:delivery_date, 'There is existing load for this shift, date and truck')
+          errors.add(:delivery_date, 'There is an existing load for this shift, date and truck')
         end
       end
     end

@@ -32,7 +32,7 @@ RSpec.describe Load, type: :operation do
 
       it 'checks orders volume' do
         expect { inst }.
-          to raise_exception(Trailblazer::Operation::InvalidContract, /There is existing load/)
+          to raise_exception(Trailblazer::Operation::InvalidContract, /There is an existing load/)
       end
     end
   end
