@@ -18,7 +18,6 @@
       tbody
         - if @route_list.orders_count > 0
           tr
-            / TODO: THINK ABOUT BOXES TO LOAD AND UNLOAD AT START AND FINISH
             td 1
             td colspan='4' Larkin LLC, starting
           - @waypoints.each_with_index do |order, idx|
