@@ -1,4 +1,22 @@
 class Load
+  class Index < Trailblazer::Operation
+    include Trailblazer::Operation::Policy
+    policy LoadPolicy, :index?
+
+    def model!(params)
+      Load.by_date_and_shift.page(params[:page])
+    end
+  end
+
+  class Show < Trailblazer::Operation
+    include Trailblazer::Operation::Policy
+    policy LoadPolicy, :show?
+
+    def model!(params)
+      Load.find(params[:id])
+    end
+  end
+
   class Create < Trailblazer::Operation
     include Trailblazer::Operation::Policy
     include Model
@@ -61,6 +79,9 @@ class Load
 
     def process(params)
       validate(params[:load]) do
+        contract.orders.each_with_index do |x, y|
+          x.delivery_order = y + 1
+        end
         contract.save
       end
     end
@@ -69,5 +90,16 @@ class Load
   class Update < Create
     action :update
     policy LoadPolicy, :update?
+  end
+
+  class Destroy < Trailblazer::Operation
+    include Trailblazer::Operation::Policy
+    include Model
+    model Load, :find
+    policy LoadPolicy, :create?
+
+    def process(_)
+      model.destroy
+    end
   end
 end

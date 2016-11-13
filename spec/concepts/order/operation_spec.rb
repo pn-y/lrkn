@@ -41,6 +41,15 @@ RSpec.describe Order, type: :operation do
     end
   end
 
+  describe '::Index' do
+    let!(:first_order) { create :order }
+    let!(:second_order) { create :order }
+
+    subject { described_class::Index.present(current_user: user).model }
+
+    it { is_expected.to eq(Order.scheduled(nil).with_shift_order.page(1)) }
+  end
+
   describe '::Update' do
     let!(:instance) { create :order }
     let(:params) { { order: attrs, current_user: user, id: instance.to_param } }

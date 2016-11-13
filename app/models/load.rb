@@ -1,7 +1,7 @@
 class Load < ActiveRecord::Base
   belongs_to :truck
 
-  has_many :orders, dependent: :nullify
+  has_many :orders, -> { order(delivery_order: :ASC) }, dependent: :nullify
 
   scope :by_date_and_shift, (lambda do
     order('delivery_date DESC',

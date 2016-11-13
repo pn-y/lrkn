@@ -1,6 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe Order, type: :model do
+  describe 'associations' do
+    it { should belong_to(:load) }
+  end
+
   describe 'scopes' do
     describe '.scheduled' do
       let!(:scheduled_order) { create :order, load_id: (create :load).id }

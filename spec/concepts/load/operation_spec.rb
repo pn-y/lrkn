@@ -46,6 +46,25 @@ RSpec.describe Load, type: :operation do
       let(:attrs) { attributes_for(:load_attrs) }
 
       it { is_expected.to be_valid }
+
+      describe 'orders delivery_order' do
+        let(:first_order) { create :order }
+        let(:second_order) { create :order }
+        let(:orders_attributes) do
+          { 'orders_attributes' =>
+            {
+              '0' => { '_destroy' => '', 'id' => first_order.id },
+              '1' => { '_destroy' => '', 'id' => second_order.id },
+            } }
+        end
+        let(:attrs) { attributes_for(:load_attrs).merge(orders_attributes) }
+
+        it do
+          subject
+          expect(first_order.reload.delivery_order).to eq(1)
+          expect(second_order.reload.delivery_order).to eq(2)
+        end
+      end
     end
 
     context 'when invalid attributes' do
@@ -76,5 +95,30 @@ RSpec.describe Load, type: :operation do
         expect { subject }.to raise_exception(Trailblazer::Operation::InvalidContract)
       end
     end
+  end
+
+  describe '::Index' do
+    let!(:first_load) { create :load }
+    let!(:second_load) { create :load }
+
+    subject { described_class::Index.present(current_user: user).model }
+
+    it { is_expected.to eq(Load.by_date_and_shift.page(1)) }
+  end
+
+  describe '::Show' do
+    let!(:load) { create :load }
+
+    subject { described_class::Show.present(current_user: user, id: load.id).model }
+
+    it { is_expected.to eq(load) }
+  end
+
+  describe '::Destroy' do
+    let!(:load) { create :load }
+
+    subject { described_class::Destroy.call(current_user: user, id: load.id) }
+
+    it { expect { subject }.to change(Load, :count).by(-1) }
   end
 end
