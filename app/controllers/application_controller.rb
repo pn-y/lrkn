@@ -3,12 +3,12 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
   before_action :authenticate_user!
-  after_action :verify_authorized, unless: :devise_controller?
-  after_action :verify_policy_scoped, only: :index
+  # after_action :verify_authorized, unless: :devise_controller?
+  # after_action :verify_policy_scoped, only: :index
 
   include Pundit
   rescue_from Pundit::NotAuthorizedError, with: :pundit_user_not_authorized
-  rescue_from Trailblazer::NotAuthorizedError, with: :trb_user_not_authorized
+  rescue_from Trailblazer::NotAuthorizedError, with: :user_not_authorized
 
   private
 
@@ -19,7 +19,7 @@ class ApplicationController < ActionController::Base
     not_authorized_redirect
   end
 
-  def trb_user_not_authorized
+  def user_not_authorized
     flash[:alert] = 'You are not authorized to perform this action.'
     not_authorized_redirect
   end

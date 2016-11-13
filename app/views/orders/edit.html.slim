@@ -3,7 +3,7 @@
     h1 Edit Order
 
   .panel-body
-    = simple_form_for @order do |f|
+    = simple_form_for @form do |f|
       = f.error_notification
 
       .row
@@ -12,7 +12,7 @@
             = f.input :delivery_shift, as: :radio_buttons,
                                        collection: Order::DELIVERY_SHIFTS
           .form-group
-            = f.input :delivery_date
+            = f.input :delivery_date, as: :date, html5: true
 
         .col-md-5
           = f.input :origin_name

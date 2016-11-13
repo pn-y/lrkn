@@ -37,7 +37,7 @@ RSpec.describe Load, type: :operation do
     end
   end
 
-  describe '::Create', type: :operation do
+  describe '::Create' do
     let(:params) { { load: attrs, current_user: user } }
 
     subject { described_class::Create.call(params) }
@@ -57,7 +57,7 @@ RSpec.describe Load, type: :operation do
     end
   end
 
-  describe '::Update', type: :operation do
+  describe '::Update' do
     let!(:instance) { create :load }
     let(:params) { { load: attrs, current_user: user, id: instance.to_param } }
 

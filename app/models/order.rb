@@ -1,6 +1,4 @@
 class Order < ActiveRecord::Base
-  attr_accessor :row_number
-
   DELIVERY_SHIFTS = %w(M N E).freeze
 
   belongs_to :load, counter_cache: true
@@ -28,61 +26,4 @@ class Order < ActiveRecord::Base
   scope :undelivered, -> { where(load_id: nil) }
 
   scope :by_deliry_order, -> { order('delivery_order ASC NULLS LAST') }
-
-  def split!
-    return if handling_unit_quantity.nil? || handling_unit_quantity <= 1
-    with_lock do
-      new_order = dup
-
-      original_quantity = handling_unit_quantity
-      original_volume = volume
-
-      new_order.handling_unit_quantity = handling_unit_quantity / 2
-      self.handling_unit_quantity = original_quantity - new_order.handling_unit_quantity
-
-      new_order.volume = volume * new_order.handling_unit_quantity / original_quantity
-      self.volume = original_volume - new_order.volume
-
-      new_order.delivery_order =
-        ActiveRecord::Base.connection.select_value("SELECT nextval('order_delivery_order_seq')")
-
-      save!
-      new_order.save!
-    end
-  end
-
-  def decrease_delivery_order_in_load!
-    return if load_id.nil?
-    order_for_swap =
-      Order.where('load_id = ? and delivery_order < ?', load_id, delivery_order).
-      order(delivery_order: :DESC).limit(1).first
-    return if order_for_swap.nil?
-    Order.swap_delivery_order(self, order_for_swap)
-  end
-
-  def increase_delivery_order_in_load!
-    return if load_id.nil?
-    order_for_swap =
-      Order.where('load_id = ? and delivery_order > ?', load_id, delivery_order).
-      order(delivery_order: :ASC).limit(1).first
-    return if order_for_swap.nil?
-    Order.swap_delivery_order(self, order_for_swap)
-  end
-
-  def remove_from_load!
-    update(load_id: nil)
-  end
-
-  def self.swap_delivery_order(first_order, second_order)
-    transaction do
-      second_order_delivery_order = second_order.delivery_order
-
-      second_order.update!(delivery_order: -second_order_delivery_order)
-
-      second_order.delivery_order = first_order.delivery_order
-      first_order.delivery_order = second_order_delivery_order
-      first_order.save!
-      second_order.save!
-    end
-  end
 end

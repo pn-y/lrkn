@@ -1,78 +1,55 @@
 class OrdersController < ApplicationController
   def index
-    @orders = policy_scope(Order).scheduled(params[:scheduled]).with_shift_order.page(params[:page])
-    authorize @orders
+    present Order::Index
+    @orders = @model
   end
 
   def edit
-    @order = Order.find(params[:id])
-    authorize @order
+    form Order::Update
   end
 
   def update
-    @order = Order.find(params[:id])
-    authorize @order
-    if @order.update(order_params)
+    run Order::Update do
       flash[:notice] = 'Order was successfully updated.'
-      redirect_to orders_url
-    else
-      render :edit
+      return redirect_to orders_url
     end
-  end
 
-  def move_up
-    order = Load.find(params[:load_id]).orders.find(params[:order_id])
-    authorize order
-    order.decrease_delivery_order_in_load!
-    redirect_to load_url(id: params[:load_id])
-  end
-
-  def move_down
-    order = Load.find(params[:load_id]).orders.find(params[:order_id])
-    authorize order
-    order.increase_delivery_order_in_load!
-    redirect_to load_url(id: params[:load_id])
+    render :edit
   end
 
   def split
-    order = Order.find(params[:id])
-    authorize order
-    order.split!
+    run Order::Split do
+      flash[:notice] = 'Order was successfully splitted.'
+      return redirect_to orders_url
+    end
+
+    flash[:alert] = "Order cannot be splitted. #{@form.errors.full_messages.join('. ')}"
     redirect_to orders_url
   end
 
   def remove_from_load
-    order = Order.find(params[:id])
-    authorize order
-    order.remove_from_load!
+    run Order::RemoveFromLoad do
+      flash[:notice] = 'Order was successfully removed from the Load.'
+      return redirect_to orders_url
+    end
+
+    flash[:alert] = 'Order not in the Load'
     redirect_to orders_url
+  end
+
+  def move_up
+    run Order::DecreaseDeliveryOrder
+    redirect_to load_url(id: params[:load_id])
+  end
+
+  def move_down
+    run Order::IncreaseDeliveryOrder
+    redirect_to load_url(id: params[:load_id])
   end
 
   private
 
-  def order_params
-    params.require(:order).permit(
-      :delivery_date,
-      :delivery_shift,
-      :origin_name,
-      :origin_address,
-      :origin_city,
-      :origin_state,
-      :origin_zip,
-      :origin_country,
-      :client_name,
-      :destination_address,
-      :destination_city,
-      :destination_state,
-      :destination_zip,
-      :destination_country,
-      :phone_number,
-      :mode,
-      :purchase_order_number,
-      :volume,
-      :handling_unit_quantity,
-      :handling_unit_type,
-      :load_id
-    )
+  def process_params!(params)
+    params.merge!(current_user: current_user)
   end
 end

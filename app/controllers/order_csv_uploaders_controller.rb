@@ -1,18 +1,21 @@
 class OrderCsvUploadersController < ApplicationController
   def new
-    authorize :order_csv_uploader, :new?
+    form CsvUploader::Create
   end
 
   def create
-    authorize :order_csv_uploader, :create?
-
-    result, message = CsvUploader.upload(params[:csv_file])
-    if result
-      flash[:notice] = message
-      redirect_to orders_url
-    else
-      flash[:error] = message
-      render :new
+    run CsvUploader::Create do
+      flash[:notice] = 'Orders were successfully uploaded.'
+      return redirect_to orders_url
     end
+
+    flash[:alert] = @form.errors.full_messages.join(' ')
+    render :new
+  end
+
+  private
+
+  def process_params!(params)
+    params.merge!(current_user: current_user)
   end
 end

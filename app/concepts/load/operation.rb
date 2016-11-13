@@ -23,7 +23,7 @@ class Load
         end
       end)
 
-      collection :orders, populator: (lambda do |fragment:, **|
+      collection :orders, form: Order::Contract::NestedOrder, populator: (lambda do |fragment:, **|
         return skip! if fragment['id'].blank?
 
         item = orders.detect { |r| r.id.to_s == fragment['id'] }
@@ -33,23 +33,7 @@ class Load
           return skip!
         end
         item ? item : orders.append(Order.find_by(id: fragment['id']))
-      end) do
-        property :id, writeable: false
-        property :_destroy, virtual: true
-
-        property :destination_address
-        property :volume
-        property :client_name
-        property :delivery_date
-        property :delivery_shift
-
-        property :destination_address
-        property :destination_city
-        property :destination_state
-        property :destination_zip
-        property :handling_unit_quantity
-        property :handling_unit_type
-      end
+      end)
 
       validates :delivery_date, :delivery_shift, :truck_id, presence: true
       validates :delivery_shift, inclusion: { in: Order::DELIVERY_SHIFTS }
