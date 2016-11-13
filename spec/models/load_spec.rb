@@ -20,5 +20,17 @@ RSpec.describe Load, type: :model do
         expect(subject).to eq([newer_load_m, load_e, load_n, load_m, older_load_m])
       end
     end
+
+    describe '.seen_by_driver' do
+      let(:truck) { create :truck }
+      let(:driver) { create :user_driver, truck: truck }
+      let(:first_load) { create :load, truck_id: truck.id }
+      let(:second_load) { create :load, delivery_shift: 'N', truck_id: truck.id }
+      let(:third_load) { create :load, delivery_shift: 'M' }
+
+      subject { described_class.seen_by_driver(driver) }
+
+      it { is_expected.to match_array([first_load, second_load]) }
+    end
   end
 end
