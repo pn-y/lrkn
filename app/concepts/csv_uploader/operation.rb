@@ -8,6 +8,7 @@ class CsvUploader
       property :csv_file, virtual: true
       collection :orders, form: Order::Contract::UploadFromCsv,
                           virtual: true,
+                          default: [],
                           populate_if_empty: Order
 
       validates :csv_file, presence: true
@@ -33,7 +34,6 @@ class CsvUploader
           orders_arr << order_attrs(row, index)
         end
 
-        contract.orders = []
         validate(params.merge(orders: orders_arr)) do
           contract.orders.map(&:save)
         end
