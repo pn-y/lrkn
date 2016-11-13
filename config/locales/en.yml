@@ -21,8 +21,3 @@
 
 en:
   hello: "Hello world"
-  pundit:
-    default: 'You cannot perform this action.'
-    order_policy:
-      edit?: 'You cannot edit order already in load. Remove it from load to edit.'
-      split?: 'You cannot split order already in load. Remove it from load to edit.'

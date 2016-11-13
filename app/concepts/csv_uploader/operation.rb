@@ -2,6 +2,9 @@ require 'csv'
 
 class CsvUploader
   class Create < Trailblazer::Operation
+    include Trailblazer::Operation::Policy
+    policy OrderCsvUploaderPolicy, :upload?
+
     contract do
       include Reform::Form::ActiveModel::ModelReflections
 

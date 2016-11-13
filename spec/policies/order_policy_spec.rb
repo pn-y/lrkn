@@ -1,28 +1,31 @@
 require 'rails_helper'
 
 RSpec.describe OrderPolicy do
-  subject { described_class }
+  context 'when driver' do
+    let(:driver) { build :user_driver }
 
-  let(:dispatcher) { build :user }
-  let(:driver) { build :user_driver }
-  let(:order) { build :order }
+    subject { described_class.new(driver, Order.new) }
 
-  permissions :index?, :remove_from_load? do
-    it { is_expected.to permit(dispatcher, order) }
-    it { is_expected.not_to permit(driver, order) }
-  end
-
-  permissions :edit?, :update?, :split? do
-    context 'when order not in load' do
-      it { is_expected.to permit(dispatcher, order) }
-      it { is_expected.not_to permit(driver, order) }
+    describe '#change?' do
+      it { expect(subject.change?).to eq(false) }
     end
 
-    context 'when order in load' do
-      before { order.load_id = 1 }
+    describe '#view?' do
+      it { expect(subject.view?).to eq(false) }
+    end
+  end
 
-      it { is_expected.not_to permit(dispatcher, order) }
-      it { is_expected.not_to permit(driver, order) }
+  context 'when dispatcher' do
+    let(:dispatcher) { build :user }
+
+    subject { described_class.new(dispatcher, Order.new) }
+
+    describe '#change?' do
+      it { expect(subject.change?).to eq(true) }
+    end
+
+    describe '#view?' do
+      it { expect(subject.view?).to eq(true) }
     end
   end
 end

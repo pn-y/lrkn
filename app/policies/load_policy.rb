@@ -1,39 +1,9 @@
 class LoadPolicy < ApplicationPolicy
-  def index?
+  def change?
     dispatcher?
   end
 
-  def create?
+  def view?
     dispatcher?
-  end
-
-  def show?
-    dispatcher?
-  end
-
-  def update?
-    dispatcher?
-  end
-
-  def destroy?
-    dispatcher?
-  end
-
-  class Scope
-    delegate :dispatcher?, to: :user
-    attr_reader :user, :scope
-
-    def initialize(user, scope)
-      @user = user
-      @scope = scope
-    end
-
-    def resolve
-      if dispatcher?
-        scope.all
-      else
-        scope.joins(:truck).where(trucks: { user_id: user.id })
-      end
-    end
   end
 end

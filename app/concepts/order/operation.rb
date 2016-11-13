@@ -3,7 +3,7 @@ class Order
     include Trailblazer::Operation::Policy
     include Model
     model Order, :update
-    policy OrderPolicy, :update?
+    policy OrderPolicy, :change?
 
     contract Contract::Update
 
@@ -16,7 +16,7 @@ class Order
 
   class Index < Trailblazer::Operation
     include Trailblazer::Operation::Policy
-    policy OrderPolicy, :index?
+    policy OrderPolicy, :view?
 
     def model!(params)
       Order.scheduled(params[:scheduled]).with_shift_order.page(params[:page])
@@ -25,7 +25,7 @@ class Order
 
   class Split < Trailblazer::Operation
     include Trailblazer::Operation::Policy
-    policy OrderPolicy, :split?
+    policy OrderPolicy, :change?
 
     contract Contract::Split
 
@@ -55,7 +55,7 @@ class Order
   end
 
   class RemoveFromLoad < Split
-    policy OrderPolicy, :remove_from_load?
+    policy OrderPolicy, :change?
 
     contract Contract::RemoveFromLoad
 
@@ -68,7 +68,7 @@ class Order
 
   class DecreaseDeliveryOrder < Trailblazer::Operation
     include Trailblazer::Operation::Policy
-    policy OrderPolicy, :move_up?
+    policy OrderPolicy, :change?
 
     def model!(params)
       Load.find(params[:load_id]).orders.find(params[:order_id])
@@ -102,7 +102,7 @@ class Order
   end
 
   class IncreaseDeliveryOrder < DecreaseDeliveryOrder
-    policy OrderPolicy, :move_down?
+    policy OrderPolicy, :change?
 
     def order_for_swap
       Order.where('load_id = ? and delivery_order > ?', model.load_id, model.delivery_order).

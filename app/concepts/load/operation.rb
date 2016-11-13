@@ -1,7 +1,7 @@
 class Load
   class Index < Trailblazer::Operation
     include Trailblazer::Operation::Policy
-    policy LoadPolicy, :index?
+    policy LoadPolicy, :view?
 
     def model!(params)
       Load.by_date_and_shift.page(params[:page])
@@ -10,7 +10,7 @@ class Load
 
   class Show < Trailblazer::Operation
     include Trailblazer::Operation::Policy
-    policy LoadPolicy, :show?
+    policy LoadPolicy, :view?
 
     def model!(params)
       Load.find(params[:id])
@@ -21,7 +21,7 @@ class Load
     include Trailblazer::Operation::Policy
     include Model
     model Load, :create
-    policy LoadPolicy, :create?
+    policy LoadPolicy, :change?
 
     contract do
       include Reform::Form::ActiveModel::ModelReflections
@@ -89,14 +89,14 @@ class Load
 
   class Update < Create
     action :update
-    policy LoadPolicy, :update?
+    policy LoadPolicy, :change?
   end
 
   class Destroy < Trailblazer::Operation
     include Trailblazer::Operation::Policy
     include Model
     model Load, :find
-    policy LoadPolicy, :create?
+    policy LoadPolicy, :change?
 
     def process(_)
       model.destroy

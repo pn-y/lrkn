@@ -30,7 +30,6 @@ gem 'kaminari'
 gem 'simple_form'
 gem 'wicked_pdf'
 gem 'wkhtmltopdf-binary'
-gem 'pundit'
 gem 'nested_form'
 gem 'trailblazer-rails'
 

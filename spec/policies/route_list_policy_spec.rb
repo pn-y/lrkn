@@ -1,10 +1,23 @@
 require 'rails_helper'
 
 RSpec.describe RouteListPolicy do
-  subject { described_class }
+  context 'when driver' do
+    let(:driver) { build :user_driver }
 
-  permissions :index?, :show? do
-    it { is_expected.to permit(User.new) }
-    it { is_expected.to permit(User.new) }
+    subject { described_class.new(driver, nil) }
+
+    describe '#view?' do
+      it { expect(subject.view?).to eq(true) }
+    end
+  end
+
+  context 'when dispatcher' do
+    let(:dispatcher) { build :user }
+
+    subject { described_class.new(dispatcher, nil) }
+
+    describe '#view?' do
+      it { expect(subject.view?).to eq(true) }
+    end
   end
 end

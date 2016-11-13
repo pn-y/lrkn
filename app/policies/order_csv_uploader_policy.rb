@@ -1,5 +1,5 @@
 class OrderCsvUploaderPolicy < ApplicationPolicy
-  def create?
+  def upload?
     dispatcher?
   end
 end

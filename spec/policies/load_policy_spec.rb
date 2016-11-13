@@ -1,37 +1,31 @@
 require 'rails_helper'
 
 RSpec.describe LoadPolicy do
-  subject { described_class }
+  context 'when driver' do
+    let(:driver) { build :user_driver }
 
-  let(:dispatcher) { build :user }
-  let(:driver) { build :user_driver }
+    subject { described_class.new(driver, Load.new) }
 
-  permissions :update?, :edit?, :destroy? do
-    it { is_expected.to permit(dispatcher, Load.new) }
-    it { is_expected.not_to permit(driver, Load.new) }
-  end
-
-  describe 'scope' do
-    let(:resolved_scope) { described_class::Scope.new(user, Load.all).resolve }
-
-    context 'when dispatcher' do
-      let(:user) { dispatcher }
-
-      it { expect(resolved_scope).to eq(Load.all) }
+    describe '#change?' do
+      it { expect(subject.change?).to eq(false) }
     end
 
-    context 'when driver' do
-      let(:user) { driver }
+    describe '#view?' do
+      it { expect(subject.view?).to eq(false) }
+    end
+  end
 
-      it { expect(resolved_scope).to eq(Load.joins(:truck).where(trucks: { user_id: user.id })) }
+  context 'when dispatcher' do
+    let(:dispatcher) { build :user }
 
-      describe do
-        let(:user) { create :user, truck: load_1.truck }
-        let(:load_1) { create :load }
-        let(:load_2) { create :load }
+    subject { described_class.new(dispatcher, Load.new) }
 
-        it { expect(resolved_scope).to eq([load_1]) }
-      end
+    describe '#change?' do
+      it { expect(subject.change?).to eq(true) }
+    end
+
+    describe '#destroy?' do
+      it { expect(subject.view?).to eq(true) }
     end
   end
 end

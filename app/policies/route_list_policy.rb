@@ -1,9 +1,5 @@
-class RouteListPolicy < Struct.new(:user, :route_list)
-  def index?
-    true
-  end
-
-  def show?
+class RouteListPolicy < ApplicationPolicy
+  def view?
     true
   end
 end
