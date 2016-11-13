@@ -23,7 +23,7 @@ class OrdersController < ApplicationController
       return redirect_to orders_url
     end
 
-    flash[:alert] = "Order cannot be splitted. #{@form.errors.full_messages.join('. ')}"
+    flash[:alert] = "Order cannot be splitted. #{@form.errors.full_messages.join('. ')}."
     redirect_to orders_url
   end
 
@@ -33,7 +33,7 @@ class OrdersController < ApplicationController
       return redirect_to orders_url
     end
 
-    flash[:alert] = 'Order not in the Load'
+    flash[:alert] = 'Order not in the Load.'
     redirect_to orders_url
   end
 
