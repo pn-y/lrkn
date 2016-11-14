@@ -98,12 +98,12 @@ RSpec.describe Load, type: :operation do
   end
 
   describe '::Index' do
-    let!(:first_load) { create :load }
-    let!(:second_load) { create :load }
+    let!(:first_load) { create :load, delivery_shift: 'E' }
+    let!(:second_load) { create :load, delivery_shift: 'N' }
 
     subject { described_class::Index.present(current_user: user).model }
 
-    it { is_expected.to eq(Load.by_date_and_shift.page(1)) }
+    it { is_expected.to eq([first_load, second_load]) }
   end
 
   describe '::Show' do

@@ -42,12 +42,12 @@ RSpec.describe Order, type: :operation do
   end
 
   describe '::Index' do
-    let!(:first_order) { create :order }
-    let!(:second_order) { create :order }
+    let!(:first_order) { create :order, delivery_shift: 'N' }
+    let!(:second_order) { create :order, delivery_shift: 'M' }
 
     subject { described_class::Index.present(current_user: user).model }
 
-    it { is_expected.to eq(Order.scheduled(nil).with_shift_order.page(1)) }
+    it { is_expected.to eq([second_order, first_order]) }
   end
 
   describe '::Update' do
