@@ -25,7 +25,10 @@ RSpec.describe OrdersHelper, type: :helper do
     context 'when not returning order' do
       let(:order) { create :order_returning }
 
-      it { is_expected.to eq('2016-11-01, E 1505 S BLOUNT ST, RALEIGH, NC, 276037, box, 15.53') }
+      it do
+        is_expected.
+          to eq('2016-11-01, E 1505 S BLOUNT ST, RALEIGH, NC, 276037, box, 15.53, Return')
+      end
     end
   end
 

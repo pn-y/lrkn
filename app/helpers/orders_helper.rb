@@ -14,6 +14,8 @@ module OrdersHelper
       label << ", #{order.destination_state}, #{order.destination_zip}"
     end
     label << "#{order.handling_unit_quantity}, #{order.handling_unit_type}, #{order.volume}"
+    label << ', Return' if it_is_return
+    label
   end
 
   def address_string(order)
