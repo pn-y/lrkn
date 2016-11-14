@@ -23,6 +23,7 @@ class Order
       property :handling_unit_quantity
       property :handling_unit_type
       property :delivery_order
+      property :returning, default: -> { client_name == 'Larkin LLC' }
     end
 
     class Update < Reform::Form

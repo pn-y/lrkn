@@ -38,12 +38,22 @@ class OrdersController < ApplicationController
   end
 
   def move_up
-    run Order::DecreaseDeliveryOrder
+    operation = Load::DecreaseDeliveryOrder.run(id: params[:load_id],
+                                                order_id: params[:order_id],
+                                                current_user: current_user) do
+      return redirect_to load_url(id: params[:load_id])
+    end
+    flash[:alert] = "Delivery order was not changed. #{operation.errors.full_messages.to_sentence}"
     redirect_to load_url(id: params[:load_id])
   end
 
   def move_down
-    run Order::IncreaseDeliveryOrder
+    operation = Load::IncreaseDeliveryOrder.run(id: params[:load_id],
+                                                order_id: params[:order_id],
+                                                current_user: current_user) do
+      return redirect_to load_url(id: params[:load_id])
+    end
+    flash[:alert] = "Delivery order was not changed. #{operation.errors.full_messages.to_sentence}"
     redirect_to load_url(id: params[:load_id])
   end
 

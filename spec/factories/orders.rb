@@ -24,6 +24,7 @@ FactoryGirl.define do
     trait :returning do
       client_name 'Larkin LLC'
       origin_name 'Andrew Reilly'
+      returning true
     end
 
     factory :order_returning, traits: [:returning]

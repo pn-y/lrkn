@@ -53,6 +53,7 @@ ActiveRecord::Schema.define(version: 20161113200134) do
     t.datetime "updated_at",                             null: false
     t.integer  "delivery_order"
     t.integer  "load_id"
+    t.boolean  "returning",              default: false, null: false
   end
 
   add_index "orders", ["delivery_order", "load_id"], name: "index_orders_on_delivery_order_and_load_id", unique: true, where: "((load_id IS NOT NULL) AND (delivery_order IS NOT NULL))", using: :btree

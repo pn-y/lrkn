@@ -65,48 +65,4 @@ class Order
       end
     end
   end
-
-  class DecreaseDeliveryOrder < Trailblazer::Operation
-    include Trailblazer::Operation::Policy
-    policy OrderPolicy, :change?
-
-    def model!(params)
-      Load.find(params[:load_id]).orders.find(params[:order_id])
-    end
-
-    def process(_)
-      second_order = order_for_swap
-      return if second_order.nil?
-      swap_delivery_order(model, second_order)
-    end
-
-    private
-
-    def order_for_swap
-      Order.where('load_id = ? and delivery_order < ?', model.load_id, model.delivery_order).
-        order(delivery_order: :DESC).limit(1).first
-    end
-
-    def swap_delivery_order(first_order, second_order)
-      model.transaction do
-        second_order_delivery_order = second_order.delivery_order
-
-        second_order.update!(delivery_order: -second_order_delivery_order)
-
-        second_order.delivery_order = first_order.delivery_order
-        first_order.delivery_order = second_order_delivery_order
-        first_order.save!
-        second_order.save!
-      end
-    end
-  end
-
-  class IncreaseDeliveryOrder < DecreaseDeliveryOrder
-    policy OrderPolicy, :change?
-
-    def order_for_swap
-      Order.where('load_id = ? and delivery_order > ?', model.load_id, model.delivery_order).
-        order(delivery_order: :ASC).limit(1).first
-    end
-  end
 end

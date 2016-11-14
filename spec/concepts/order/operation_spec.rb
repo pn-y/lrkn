@@ -133,32 +133,4 @@ RSpec.describe Order, type: :operation do
       end
     end
   end
-
-  describe 'changing delivery_order' do
-    let(:load) { create :load }
-    let!(:first_order) { create :order, load: load, delivery_order: 1 }
-    let!(:second_order) { create :order, load: load, delivery_order: 2 }
-    let!(:third_order) { create :order, load: load, delivery_order: 3 }
-    let(:params) { { current_user: user, load_id: load.id, order_id: second_order.id } }
-
-    describe '::DecreaseDeliveryOrder' do
-      subject { described_class::DecreaseDeliveryOrder.call(params) }
-
-      it 'swaps delivery order' do
-        subject
-        expect(first_order.reload.delivery_order).to eq(2)
-        expect(second_order.reload.delivery_order).to eq(1)
-      end
-    end
-
-    describe '::IncreaseDeliveryOrder' do
-      subject { described_class::IncreaseDeliveryOrder.call(params) }
-
-      it 'swaps delivery order' do
-        subject
-        expect(third_order.reload.delivery_order).to eq(2)
-        expect(second_order.reload.delivery_order).to eq(3)
-      end
-    end
-  end
 end

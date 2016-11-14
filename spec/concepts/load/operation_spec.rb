@@ -10,16 +10,80 @@ RSpec.describe Load, type: :operation do
     it { is_expected.to validate_presence_of :delivery_date }
 
     describe 'truck_volume' do
-      let!(:order) { create :order, volume: 10_000 }
-      let(:load_attrs) do
-        attributes_for(:load_attrs).merge('orders_attributes' => { 0 => { 'id' => order.id } })
-      end
       let(:params) { { load: load_attrs, current_user: user } }
-      let(:inst) { Load::Create.call(params) }
 
-      it 'checks orders volume' do
-        expect { inst }.
-          to raise_exception(Trailblazer::Operation::InvalidContract, /Not enough truck volume/)
+      subject { Load::Create.call(params) }
+
+      context 'when not enough volume for orders' do
+        let!(:order) { create :order, volume: 1_401 }
+        let(:load_attrs) do
+          attributes_for(:load_attrs).merge('orders_attributes' =>
+          {
+            1 => { 'id' => order.id }
+          })
+        end
+
+        it 'raises invalid contract exception' do
+          expect { subject }.
+            to raise_exception(Trailblazer::Operation::InvalidContract, /Remove orders/)
+        end
+      end
+
+      context 'when not enough volume for return orders' do
+        let!(:return_order) { create :order_returning, volume: 1_401 }
+        let(:load_attrs) do
+          attributes_for(:load_attrs).merge('orders_attributes' =>
+          {
+            1 => { 'id' => return_order.id }
+          })
+        end
+
+        it 'raises invalid contract exception' do
+          expect { subject }.
+            to raise_exception(Trailblazer::Operation::InvalidContract, /Remove returning orders/)
+        end
+      end
+
+      context 'when complex case' do
+        let!(:order_1) { create :order, volume: 400 }
+        let!(:order_2) { create :order, volume: 400 }
+        let!(:order_3) { create :order, volume: 400 }
+        let!(:return_order_1) { create :order_returning, volume: 601 }
+        let!(:return_order_2) { create :order_returning, volume: 601 }
+
+        context 'if not enough volume for one of returns' do
+          let(:load_attrs) do
+            attributes_for(:load_attrs).merge('orders_attributes' =>
+            {
+              0 => { 'id' => order_1.id },
+              1 => { 'id' => return_order_1.id },
+              2 => { 'id' => order_2.id },
+              3 => { 'id' => order_3.id },
+              4 => { 'id' => return_order_2.id },
+            })
+          end
+
+          it 'raises invalid contract exception' do
+            expect { subject }.
+              to raise_exception(Trailblazer::Operation::InvalidContract,
+                                 /not enough volume after 2nd waypoint./)
+          end
+        end
+
+        context 'if enough volume for any' do
+          let(:load_attrs) do
+            attributes_for(:load_attrs).merge('orders_attributes' =>
+            {
+              0 => { 'id' => order_1.id },
+              2 => { 'id' => order_2.id },
+              1 => { 'id' => return_order_1.id },
+              3 => { 'id' => order_3.id },
+              4 => { 'id' => return_order_2.id },
+            })
+          end
+
+          it { is_expected.to be_valid }
+        end
       end
     end
 
@@ -120,5 +184,33 @@ RSpec.describe Load, type: :operation do
     subject { described_class::Destroy.call(current_user: user, id: load.id) }
 
     it { expect { subject }.to change(Load, :count).by(-1) }
+  end
+
+  describe 'changing delivery_order' do
+    let(:load) { create :load }
+    let!(:first_order) { create :order, load: load, delivery_order: 1 }
+    let!(:second_order) { create :order, load: load, delivery_order: 2 }
+    let!(:third_order) { create :order, load: load, delivery_order: 3 }
+    let(:params) { { current_user: user, id: load.id, order_id: second_order.id } }
+
+    describe '::DecreaseDeliveryOrder' do
+      subject { described_class::DecreaseDeliveryOrder.call(params) }
+
+      it 'swaps delivery order' do
+        subject
+        expect(first_order.reload.delivery_order).to eq(2)
+        expect(second_order.reload.delivery_order).to eq(1)
+      end
+    end
+
+    describe '::IncreaseDeliveryOrder' do
+      subject { described_class::IncreaseDeliveryOrder.call(params) }
+
+      it 'swaps delivery order' do
+        subject
+        expect(third_order.reload.delivery_order).to eq(2)
+        expect(second_order.reload.delivery_order).to eq(3)
+      end
+    end
   end
 end

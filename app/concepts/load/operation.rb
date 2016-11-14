@@ -23,59 +23,7 @@ class Load
     model Load, :create
     policy LoadPolicy, :change?
 
-    contract do
-      include Reform::Form::ActiveModel::ModelReflections
-
-      property :delivery_shift
-      property :delivery_date
-      property :truck, populator: (lambda do |model:, **|
-        model
-      end) do
-        property :max_volume
-      end
-      property :truck_id, populator: (lambda do |fragment:, **|
-        truck = Truck.find_by(id: fragment)
-        if truck
-          self.truck = truck
-          self.truck_id = truck.id
-        end
-      end)
-
-      collection :orders, form: Order::Contract::NestedOrder, populator: (lambda do |fragment:, **|
-        return skip! if fragment['id'].blank?
-
-        item = orders.detect { |r| r.id.to_s == fragment['id'] }
-
-        if fragment[:_destroy] == '1'
-          orders.delete(item) if item
-          return skip!
-        end
-        item ? item : orders.append(Order.find_by(id: fragment['id']))
-      end)
-
-      validates :delivery_date, :delivery_shift, :truck_id, presence: true
-      validates :delivery_shift, inclusion: { in: Order::DELIVERY_SHIFTS }
-      validate :truck_volume
-      def truck_volume
-        volume = orders.map(&:volume).sum
-        if truck && volume > truck.max_volume
-          diff = volume - truck.max_volume
-          errors.add(:truck_id,
-                     "Not enough truck volume. Remove orders to free at least #{diff} cubes")
-        end
-      end
-
-      validate :shift_availability
-      def shift_availability
-        existing_load = Load.where(delivery_date: delivery_date,
-                                   delivery_shift: delivery_shift,
-                                   truck_id: truck_id).
-                        where.not(id: id)
-        if existing_load.present?
-          errors.add(:delivery_date, 'There is an existing load for this shift, date and truck')
-        end
-      end
-    end
+    contract Load::Contract::Create
 
     def process(params)
       validate(params[:load]) do
@@ -90,6 +38,59 @@ class Load
   class Update < Create
     action :update
     policy LoadPolicy, :change?
+  end
+
+  class IncreaseDeliveryOrder < Trailblazer::Operation
+    include Trailblazer::Operation::Policy
+    include Model
+    model Load, :find
+    policy LoadPolicy, :change?
+
+    contract Load::Contract::DeliveryOrderSwap
+
+    def process(params)
+      order = get_order_with_id(params[:order_id])
+      order_for_swap = get_order_with_delivery_order(order.delivery_order + 1)
+      return unless order_for_swap
+
+      order.delivery_order, order_for_swap.delivery_order = order_for_swap.delivery_order, order.delivery_order
+      validate({}) do
+        ActiveRecord::Base.transaction do
+          order.delivery_order = -order.delivery_order
+          order.save
+          order_for_swap.save
+          order.delivery_order = -order.delivery_order
+          order.save
+        end
+      end
+    end
+
+    def get_order_with_id(id)
+      contract.orders.detect { |x| x.id == id.to_i }
+    end
+
+    def get_order_with_delivery_order(delivery_order)
+      contract.orders.detect { |x| x.delivery_order == delivery_order }
+    end
+  end
+
+  class DecreaseDeliveryOrder < IncreaseDeliveryOrder
+    def process(params)
+      order = get_order_with_id(params[:order_id])
+      order_for_swap = get_order_with_delivery_order(order.delivery_order - 1)
+      return unless order_for_swap
+
+      order.delivery_order, order_for_swap.delivery_order = order_for_swap.delivery_order, order.delivery_order
+      validate({}) do
+        ActiveRecord::Base.transaction do
+          order_for_swap.delivery_order = -order_for_swap.delivery_order
+          order_for_swap.save
+          order.save
+          order_for_swap.delivery_order = -order_for_swap.delivery_order
+          order_for_swap.save
+        end
+      end
+    end
   end
 
   class Destroy < Trailblazer::Operation
