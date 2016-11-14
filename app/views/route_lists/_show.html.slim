@@ -21,7 +21,6 @@
             td 1
             td colspan='4' Larkin LLC, starting
           - @waypoints.each_with_index do |order, idx|
-            - it_is_return = returning_order?(order)
             tr
               td = idx + 2
               td = address_string(order)

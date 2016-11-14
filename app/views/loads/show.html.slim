@@ -17,7 +17,6 @@
         - if @load.orders_count > 0
           tr
           - @waypoints.each_with_index do |order, idx|
-            - it_is_return = returning_order?(order)
             tr
               td = idx + 1
               td = address_string(order)

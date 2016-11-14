@@ -25,12 +25,11 @@
         .text-center
           = paginate @orders
         - @orders.each do |order|
-          - it_is_return = returning_order?(order)
           tr class=order_row_style(order)
             td = order.delivery_date
             td = order.delivery_shift
             td = order.purchase_order_number
-            - if it_is_return
+            - if order.returning
               td = order.origin_name
               td = order.phone_number
               td = order.origin_address
