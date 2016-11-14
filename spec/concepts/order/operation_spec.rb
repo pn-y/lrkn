@@ -69,6 +69,30 @@ RSpec.describe Order, type: :operation do
         expect { subject }.to raise_exception(Trailblazer::Operation::InvalidContract)
       end
     end
+
+    context 'setters' do
+      describe '#client_name=' do
+        context 'when setting client name as Larkin LLC' do
+          let(:attrs) { { client_name: 'Larkin LLC' } }
+
+          it 'sets returning true' do
+            subject
+            expect(instance.reload.returning).to eq(true)
+          end
+        end
+
+        context 'when setting client name as Larkin LLC' do
+          let(:attrs) { { client_name: 'client name' } }
+          let(:instance) { create :order, returning: true }
+
+          it 'sets returning true' do
+            expect(instance.returning).to eq(true)
+            subject
+            expect(instance.reload.returning).to eq(false)
+          end
+        end
+      end
+    end
   end
 
   describe '::Split!' do
