@@ -43,7 +43,12 @@ RSpec.describe CsvUploader, type: :operation do
     context 'when success' do
       let(:file) { fixture_file_upload('correct_file.csv', 'text/csv') }
 
-      it { expect { subject }.to change(Order, :count).by(2) }
+      it { expect { subject }.to change(Order, :count).by(3) }
+
+      it 'correctly recognize returning orders' do
+        subject
+        expect(Order.where(returning: true).count).to eq(1)
+      end
     end
   end
 end

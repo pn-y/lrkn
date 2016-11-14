@@ -48,6 +48,11 @@ class Order
       include OrderProperties
       property :row_number, virtual: true
 
+      def client_name=(value)
+        self.returning = value == 'Larkin LLC'
+        super(value)
+      end
+
       validate :volume_numericality
       def volume_numericality
         vol = volume.to_f
