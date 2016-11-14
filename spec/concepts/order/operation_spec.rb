@@ -73,6 +73,7 @@ RSpec.describe Order, type: :operation do
 
   describe '::Split!' do
     subject { described_class::Split.call(id: order.id, current_user: user) }
+
     context 'when quantity <= 1' do
       let!(:order) { create :order, handling_unit_quantity: 1 }
 
@@ -98,6 +99,15 @@ RSpec.describe Order, type: :operation do
 
         expect(order.handling_unit_quantity + Order.last.handling_unit_quantity).to eq(7)
         expect(order.volume + Order.last.volume).to eq(21)
+      end
+    end
+
+    context 'when in load' do
+      let!(:order) { create :order, load: (create :load) }
+
+      it 'raises exception' do
+        expect { subject }.
+          to raise_exception(Trailblazer::Operation::InvalidContract, /must be blank/)
       end
     end
   end

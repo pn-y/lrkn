@@ -62,9 +62,11 @@ class Order
     class Split < Reform::Form
       property :handling_unit_quantity
       property :volume
+      property :load_id
 
       validates :volume, numericality: { greater_than_or_equal_to: 1 }
       validates :handling_unit_quantity, numericality: { greater_than: 1 }
+      validates :load_id, absence: true
     end
 
     class RemoveFromLoad < Reform::Form

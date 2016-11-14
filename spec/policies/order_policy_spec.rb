@@ -13,6 +13,10 @@ RSpec.describe OrderPolicy do
     describe '#view?' do
       it { expect(subject.view?).to eq(false) }
     end
+
+    describe '#update?' do
+      it { expect(subject.update?).to eq(false) }
+    end
   end
 
   context 'when dispatcher' do
@@ -26,6 +30,18 @@ RSpec.describe OrderPolicy do
 
     describe '#view?' do
       it { expect(subject.view?).to eq(true) }
+    end
+
+    describe '#update?' do
+      context 'when order not in load' do
+        it { expect(subject.update?).to eq(true) }
+      end
+
+      context 'when order in load' do
+        subject { described_class.new(dispatcher, Order.new(load_id: 1)) }
+
+        it { expect(subject.update?).to eq(false) }
+      end
     end
   end
 end

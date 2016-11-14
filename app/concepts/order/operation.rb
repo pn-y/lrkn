@@ -3,7 +3,7 @@ class Order
     include Trailblazer::Operation::Policy
     include Model
     model Order, :update
-    policy OrderPolicy, :change?
+    policy OrderPolicy, :update?
 
     contract Contract::Update
 
