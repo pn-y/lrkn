@@ -32,13 +32,12 @@ class Load
 
       validate :truck_volume
       def truck_volume
-        delivery_order_ret_orders = get_delivery_order_ret_orders
         simple_volume_validation(orders.select(&:returning).sum(&:volume), ' returning')
         volume_loaded = orders.select { |x| !x.returning }.sum(&:volume)
         simple_volume_validation(volume_loaded)
         if truck
           free_space_left = truck.max_volume - volume_loaded
-          complex_volume_validation(delivery_order_ret_orders, free_space_left)
+          complex_volume_validation(get_delivery_order_ret_orders, free_space_left)
         end
       end
 
