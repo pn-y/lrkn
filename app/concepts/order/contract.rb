@@ -23,12 +23,17 @@ class Order
       property :handling_unit_quantity
       property :handling_unit_type
       property :delivery_order
-      property :returning, default: -> { client_name == 'Larkin LLC' }
+      property :returning
     end
 
     class Update < Reform::Form
       include Reform::Form::ActiveModel::ModelReflections
       include OrderProperties
+
+      def client_name=(value)
+        self.returning = value == 'Larkin LLC'
+        super(value)
+      end
 
       validates :volume, numericality: { less_than: 100_000, greater_than_or_equal_to: 0 },
                          allow_nil: true
