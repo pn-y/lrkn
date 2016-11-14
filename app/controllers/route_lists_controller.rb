@@ -1,13 +1,13 @@
 class RouteListsController < ApplicationController
   def index
-    @route_lists = policy_scope(Load).by_date_and_shift.page(params[:page])
-    authorize :route_list, :index?
+    present RouteList::Index
+    @route_lists = @model
   end
 
   def show
-    @route_list = policy_scope(Load).find(params[:id])
-    @waypoints = @route_list.orders.by_deliry_order
-    authorize :route_list, :show?
+    present RouteList::Show
+    @route_list = @model
+    @waypoints = @route_list.orders
 
     respond_to do |format|
       format.html
@@ -20,5 +20,11 @@ class RouteListsController < ApplicationController
                disposition: 'attachment'
       end
     end
+  end
+
+  private
+
+  def process_params!(params)
+    params.merge!(current_user: current_user)
   end
 end
