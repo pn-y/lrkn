@@ -55,7 +55,7 @@ class Order
       validate :delivery_shift_inclusion
       def delivery_shift_inclusion
         return if delivery_shift.blank? || Order::DELIVERY_SHIFTS.include?(delivery_shift)
-        errors.add(:base, "Row #{row_number}, delivery shift is not included in the list.")
+        errors.add(:base, "Row #{row_number}, delivery shift is not included in the list")
       end
     end
 

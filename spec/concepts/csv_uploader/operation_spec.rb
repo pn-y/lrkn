@@ -24,7 +24,7 @@ RSpec.describe CsvUploader, type: :operation do
       it do
         expect { subject }.to raise_exception(
           Trailblazer::Operation::InvalidContract,
-          /"Row 1, delivery shift is not included in the list.", "Row 4, delivery shift is not included in the list."/
+          /"Row 1, delivery shift is not included in the list", "Row 4, delivery shift is not included in the list"/
         )
       end
     end

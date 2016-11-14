@@ -9,7 +9,7 @@ class OrderCsvUploadersController < ApplicationController
       return redirect_to orders_url
     end
 
-    flash[:alert] = @form.errors.full_messages.join(' ')
+    flash[:alert] = @form.errors.full_messages.to_sentence
     render :new
   end
 
